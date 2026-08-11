@@ -1,0 +1,15 @@
+.nav-link {
+    border-radius: 8px;
+    transition: background-color .3s ease;
+}
+.nav-link:hover {
+    background-color: tgba(255,255,255,.15);
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card h2{
+    font-weight: 700;
+}
