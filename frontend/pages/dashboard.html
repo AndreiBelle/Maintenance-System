@@ -25,7 +25,7 @@
             <main class="col-md-9 col-lg-10 p-4">
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Pesquisar equipamento">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar equipamento">
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary w-100">
@@ -39,7 +39,7 @@
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6>Equipamentos Ativos</h6>
-                                <h2 id="activesTotal">48</h2>
+                                <h2 id="activesTotal">10</h2>
                             </div>
                         </div>
                     </div>
@@ -48,6 +48,14 @@
                             <div class="card-body">
                                 <h6>Manutenção Preventiva</h6>
                                 <h2 id="preventiveTotal">15</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6>Em Manutenção</h6>
+                                <h2 id="maintenceEquipamentsTotal">12</h2>
                             </div>
                         </div>
                     </div>
@@ -61,7 +69,7 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="equipmentsTable">
                             <tr>
                                 <td>Empacotadora</td>
                                 <td>Setor Peru A1</td>
@@ -75,35 +83,46 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="row">
+                    <button id="btnNewEquipament" class="btn btn-primary">Novo Equipamento</button>
+                </div>
             </main>
         </div>
 
+        <div class="modal fade"
+        id="equipamentModel"
+        tabindex="-1"
+        aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Novo equipamento
+                        </h5>
+                        <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"    
+                        >
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input
+                        type="text"
+                        id="equipamentName"
+                        class="form-control"
+                        placeholder="Nome Equipamento"
+                        >
+                        <button type="button"
+                        id="btnSaveEquipament"
+                        class="btn btn-success"
+                        >Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
-
-
-
-    <header>
-        <h1>Sistema de controle de manutenção</h1>
-    </header>
-
-    <main>
-        <section>
-            <h2>Indicadores</h2>
-            <article>
-                <h3>Equipamentos Ativos</h3>
-                <p>25</p>
-            </article>
-            <article>
-                <h3>Total Equipamentos</h3>
-                <p>498</p>
-            </article>
-        </section>
-        <section>
-            <h2>Equipamentos Recentes</h2>
-            
-        </section>
-    </main>
 
     <footer>
         <p>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</p>
