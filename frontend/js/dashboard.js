@@ -55,7 +55,7 @@ function equipamentsTableRender(list) {
 
         const row = document.createElement("tr");
 
-        const statusBR = equipment.status === "active" ? "ativoou" : "desativo" 
+        const statusBR = equipment.status === "active" ? "Ativado" : "Desativado" 
 
         row.innerHTML = `<td>${equipment.name}</td>
         <td>${equipment.local}</td>
@@ -102,7 +102,7 @@ btnSave.addEventListener("click", () => {
 
     const newEquipament = {
         id: equipaments.length + 1,
-        name: equipamentName,
+        name: equipamentName.value,
         local: "Não Informado",
         status: "active",
         patrimony: `${String(equipaments.length+1).padStart(3, "0")}-PP`
