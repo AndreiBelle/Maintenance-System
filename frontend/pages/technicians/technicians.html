@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipamentos - Sistema de Manutenção</title>
+    <title>Técnicos - Sistema de Manutenção</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="../css//dashboard.css">
     <link rel="stylesheet" href="../css/style.css">
@@ -17,15 +17,15 @@
             <aside class="col-md-3 col-lg-2 bg-dark text-white min-vh-100">
                 <nav class="nav flex-column">
                     <a class="nav-link text-white active" href="../dashboard.html">Dashboard</a>
-                    <a class="nav-link text-white" href="#">Equipamento</a>
+                    <a class="nav-link text-white" href="../equipaments/equipaments.html">Equipamento</a>
                     <a class="nav-link text-white" href="#">Categorias</a>
-                    <a class="nav-link text-white" href="../technicians/technicians.html">Tecnicos</a>
+                    <a class="nav-link text-white" href="#">Tecnicos</a>
                 </nav>
             </aside>
             <main class="col-md-9 col-lg-10 p-4">
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Pesquisar equipamento">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar técnico...">
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary w-100">
@@ -34,77 +34,78 @@
                     </div>
                 </form>
 
-                <div class="row g-4 mb-4">
+                <div class="row g-4 mb-4 text-center">
                     <div class="col-md-4">
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <h6>Equipamentos Ativos</h6>
-                                <h2>48</h2>
+                                <h6>Ativos</h6>
+                                <h2 id="activesTotal">10</h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <h6>Manutenção Preventiva</h6>
-                                <h2>15</h2>
+                                <h6>Em Atendimento</h6>
+                                <h2 id="preventiveTotal">15</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6>Descanso/Intervalo</h6>
+                                <h2 id="maintenceEquipamentsTotal">12</h2>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover flex text-center">
                         <thead>
                             <tr>
-                                <th>Equipamento</th>
+                                <th>Nome</th>
                                 <th>Local</th>
                                 <th>Status</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
-
-                        <tbody id="equipmentsTable">
-
+                        <tbody id="techniciansTable">
                         </tbody>
-
                     </table>
                 </div>
 
                 <div class="row">
-                    <button id="btnNewEquipament" class="btn btn-primary">Novo Equipamento</button>
+                    <button id="btnNewTechnicians" class="btn btn-primary">Cadastrar Técnico</button>
                 </div>
 
-                <div class="modal fade" id="equipamentModel" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="technicianModel" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">
-                                    Novo equipamento
+                                    Cadastro de novo Técnico
                                 </h5>
-                                <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"    
-                                >
+                                <button type="button" class="btn-close" data-bs-dimiss="modal">
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <input
+                            <div class="modal-body"><input
                                 type="text"
-                                id="equipamentName"
+                                id="technicianName"
                                 class="form-control"
-                                placeholder="Nome Equipamento"
+                                placeholder="Nome do Técnico"
                                 >
                                 <button type="button"
-                                id="btnSaveEquipament"
-                                class="btn btn-success"
-                                >Salvar</button>
+                                    id="btnSaveEquipament"
+                                    class="btn btn-success"
+                                    >Salvar</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                
             </main>
         </div>
-
 
     </div>
 
@@ -115,6 +116,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    <script src="../../js/equipaments.js"></script>
+    <script src="../../js/technicians.js"></script>
 </body>
 </html>
