@@ -54,14 +54,14 @@ function equipamentsTableRender(list) {
         <td>${equipment.local}</td>
         <td>${equipment.status}</td>
         <td>${equipment.NumberSerie}</td>
-        <td> <button class="btn btn-danger"
-        onclick="equipamentDelete(${equipment.id})">Excluir</button>
+        <td> <button class="btn btn-danger btn-delete" data-id="${equipment.id}">Excluir</button>
         </td>  
         `
 
         
         equipamentsTable.appendChild(row);
     });
+    
 }
 
 equipamentsTableRender(equipaments);
@@ -74,10 +74,12 @@ function dashboardRefresh() {
     activeTotal.textContent = actives;
     maintenceEquipamentsTotal.textContent = inMaintence;
 
-    console.log("Dashboard Atualizado!")
+    console.log("..")
 }
 
 dashboardRefresh()
+
+
 
 function equipamentDelete(id) {
     const index = equipaments.findIndex(equipament => equipament.id === id
@@ -92,3 +94,13 @@ function equipamentDelete(id) {
     dashboardRefresh();
 
 }
+
+equipamentsTable.addEventListener('click', (event) => {
+    if (event.target.classList.contains('btn-delete')) {
+        const idEquipamentDelete = Number(event.target.dataset.id);
+        equipamentDelete(idEquipamentDelete);
+    }
+});
+
+equipamentsTableRender(equipaments);
+dashboardRefresh();

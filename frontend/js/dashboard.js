@@ -9,9 +9,6 @@ console.log("Carregou o Dashboard");
 
 const systemName = "Sistema de Controle de Manuteção";
 
-let activeEquipaments = 58;
-let manutenceEquipaments = 5;
-
 preventiveTotal.textContent = 1
 
 
