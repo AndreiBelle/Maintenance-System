@@ -2,28 +2,9 @@ const btnNewEquipament = document.getElementById("btnNewEquipament");
 const modalElement = document.getElementById("equipamentModel");
 const modal = new bootstrap.Modal(modalElement);
 const equipamentsTable = document.querySelector("#equipmentsTable");
+const activeTotal = document.querySelector("#activeTotal")
+import { equipaments } from '../js/bd.js'
 
-
-const equipaments = [
-    {id:1,
-    name: "Compressor",
-    local: "Oficina",
-    status: "active",
-    patrimony: "12-PP"
-  },
-  {id:2,
-    name: "Gerador",
-    local: "Casa de Máquina",
-    status: "maintence",
-    patrimony: "65-PP"
-  },
-  {id:3,
-    name: "Torno",
-    local: "Oficina",
-    status: "active",
-    patrimony: "1-PP"
-  }
-];
 
 
 btnNewEquipament.addEventListener("click", () => {
@@ -31,8 +12,11 @@ btnNewEquipament.addEventListener("click", () => {
 })
 
 const btnSave = document.getElementById("btnSaveEquipament");
-
 const equipamentName = document.getElementById("equipamentName");
+const equipamentSerie = document.getElementById("equipamentSerie");
+const equipamentLocal = document.getElementById("equipamentLocal");
+const equipamentStatus = document.getElementById("equipamentStatus");
+
 
 btnSave.addEventListener("click", () => {
     if (equipamentName.value.trim() === "") {
@@ -44,9 +28,9 @@ btnSave.addEventListener("click", () => {
     const newEquipament = {
         id: equipaments.length + 1,
         name: equipamentName.value,
-        local: "Não Informado",
-        status: "active",
-        patrimony: `${String(equipaments.length+1).padStart(3, "0")}-PP`
+        local: equipamentLocal.value,
+        status: equipamentStatus.value,
+        NumberSerie: equipamentSerie.value,
     }
 
     equipaments.push(newEquipament);
@@ -65,11 +49,11 @@ function equipamentsTableRender(list) {
 
         const row = document.createElement("tr");
 
-        const statusBR = equipment.status === "active" ? "Ativado" : "Desativado" 
 
         row.innerHTML = `<td>${equipment.name}</td>
         <td>${equipment.local}</td>
-        <td>${statusBR}</td>
+        <td>${equipment.status}</td>
+        <td>${equipment.NumberSerie}</td>
         <td> <button class="btn btn-danger"
         onclick="equipamentDelete(${equipment.id})">Excluir</button>
         </td>  
@@ -81,6 +65,19 @@ function equipamentsTableRender(list) {
 }
 
 equipamentsTableRender(equipaments);
+
+function dashboardRefresh() {
+    const actives = equipaments.filter(equipament => equipament.status === "Ativo").length;
+    
+    const inMaintence = equipaments.filter(equipament => equipament.status === "maintence").length;
+
+    activeTotal.textContent = actives;
+    maintenceEquipamentsTotal.textContent = inMaintence;
+
+    console.log("Dashboard Atualizado!")
+}
+
+dashboardRefresh()
 
 function equipamentDelete(id) {
     const index = equipaments.findIndex(equipament => equipament.id === id

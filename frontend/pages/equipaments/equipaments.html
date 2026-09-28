@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipamentos - Sistema de Manutenção</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css//dashboard.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/forms.css">
 </head>
 <body class="bg-light">
 
@@ -39,7 +39,7 @@
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6>Equipamentos Ativos</h6>
-                                <h2>48</h2>
+                                <h2 id="activeTotal">#</h2>
                             </div>
                         </div>
                     </div>
@@ -53,19 +53,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover flex text-center">
                         <thead>
                             <tr>
                                 <th>Equipamento</th>
                                 <th>Local</th>
                                 <th>Status</th>
+                                <th>Número de Série</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
-
                         <tbody id="equipmentsTable">
-
                         </tbody>
-
                     </table>
                 </div>
 
@@ -87,12 +86,36 @@
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <label for="equipamentName">Nome do Equipamento</label>
                                 <input
                                 type="text"
+                                name="nome-equipamento"
                                 id="equipamentName"
-                                class="form-control"
+                                class="form-control mb-4"
                                 placeholder="Nome Equipamento"
                                 >
+                                <label for="equipamentSerie">Nº de Série do Equipamento</label>
+                                <input
+                                type="text"
+                                id="equipamentSerie"
+                                class="form-control mb-4"
+                                placeholder="Número de série do equipamento"
+                                >
+                                <label for="equipamentLocal">Local</label>
+                                <input
+                                type="text"
+                                id="equipamentLocal"
+                                class="form-control mb-4"
+                                placeholder="Local onde o equipamento está estar localizado"
+                                >
+                                <label for="equipamentStatus" class="form-label">Status do Equipamento</label>
+                                <select class="form-select mb-4" id="equipamentStatus" name="status-equipamento">
+                                    <option selected disabled value="">Selecione o status...</option>
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Em Manutenção">Em Manutenção</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+
                                 <button type="button"
                                 id="btnSaveEquipament"
                                 class="btn btn-success"
@@ -115,6 +138,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    <script src="../../js/equipaments.js"></script>
+    <script type="module" src="../../js/equipaments.js"></script>
 </body>
 </html>
