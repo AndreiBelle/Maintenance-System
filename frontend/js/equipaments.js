@@ -100,7 +100,7 @@ equipamentsTable.addEventListener('click', (event) => {
         const idEquipamentDelete = Number(event.target.dataset.id);
         equipamentDelete(idEquipamentDelete);
     }
+    equipamentsTableRender(equipaments);
+    dashboardRefresh();
 });
 
-equipamentsTableRender(equipaments);
-dashboardRefresh();
