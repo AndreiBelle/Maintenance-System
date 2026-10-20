@@ -1,11 +1,7 @@
-import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-
-import { createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-
-import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 
-import { auth } from "./firebase";
+import { auth } from "./firebase.js";
 
 
 const loginForm = document.querySelector('#loginForm');
