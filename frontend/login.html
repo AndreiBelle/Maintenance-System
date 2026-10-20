@@ -8,32 +8,46 @@
     <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
-    <header>
-        <h1>Login</h1>
-    </header>
-    <main>
-        <form id="loginForm">
-            <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
-                <input id="email" class="form-control" type="email" placeholder="Digite seu E-mail" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Senha</label>
-                <input id="password" class="form-control" type="password" placeholder="Digite sua Senha" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
-        <div class="actions">
-            <button type="button" id="registerButton" class="btn btn-primary w-100">Registrar-se</button>
-            <button type="button" id="resetPasswordButton" class="btn btn-link">Esqueci minha senha</button>
-            <p id="feedback" role="status" aria-live="polite"></p>
-        </div>
 
-        
-    </main>
-    
+    <div class="container-fluid p-0 vh-100 overflow-hidden">
+        <div class="row g-0 h-100">
+            
+            <div class="col-md-8 d-none d-md-block h-100 bg-dark">
+                <video autoplay muted loop playsinline alt="Background" class="w-100 h-100 object-fit-cover" style="object-position: right;">
+                    <source src="./documents/Video/video_login.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="col-md-4 col-12 h-100 d-flex flex-column justify-content-center p-5 bg-white">
+                
+                <div id="divForm" class="w-100">
+                    <h3 class="text-center mb-4">Login</h3>
+                    
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input id="email" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input id="password" type="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+
+                    <button id="registerButton" class="btn btn-outline-primary w-100 mt-2">Registrar-se</button>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-link text-decoration-none p-0">Esqueceu a senha?</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
     <script type="module" src="./js/login.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
 </body>
 </html>
