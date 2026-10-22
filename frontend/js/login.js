@@ -1,7 +1,5 @@
-import { signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
-
-
 import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
 
 const loginForm = document.querySelector('#loginForm');
@@ -17,54 +15,35 @@ loginForm.addEventListener('submit', async (event) => {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    feedback.textContent = "Validando acesso...";
 
     try {
         await signInWithEmailAndPassword(auth, email, password)
-        window.location.href = "./dashboard.html"
+        window.location.href = "./pages/dashboard.html"
     } catch (err) {
-        console.log("Ocorreu um problema ao validar: ", err)
-        feedback.textContent = "Não foi possível entrar. Verifique suas credenciais e tente novamente";
+        console.error("Ocorreu um problema ao validar: ", err)
     }
 });
 
-registerButton.addEventListener('click', async (event) => {
+registerButton.addEventListener('click', () => {
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+    window.location.href = "./pages/auth/register.html" 
 
-    if (!email || !password) {
-        feedback.textContent = "Necessário colocar e-mail e senha para criar a conta";
-        return
-    }
-
-    try {
-        await createUserWithEmailAndPassword(auth, email, password)
-        feedback.textContent = "Conta criada com sucesso!"
-        setTimeout((
-            window.location.href = "./dashboard.html" 
-        ), 1000)
-       
-    } catch (err) {
-        console.log("Ocorreu um problema ao validar: ", err)
-        feedback.textContent = "Não foi possível entrar. Verifique suas credenciais e tente novamente";
-    }
 });
 
-resetPassword.addEventListener('click', async (event) => {
-    const email = emailInput.value.trim();
+// resetPassword.addEventListener('click', async (event) => {
+//     const email = emailInput.value.trim();
 
-    if (!email) {
-        feedback.textContent = "Necessário colocar e-mailresetar a senha";
-        return
-    }
+//     if (!email) {
+//         feedback.textContent = "Necessário colocar e-mail para resetar a senha";
+//         return
+//     }
 
-    try {
-        await sendPasswordResetEmail(auth, email)
-        feedback.textContent = "E-mail enviado!";
-    } catch (err) {
-        console.log("Ocorreu um problema ao validar: ", err)
-        feedback.textContent = "Não foi possível realizar o envio, tente novamente mais tarde!";
-    }
+//     try {
+//         await sendPasswordResetEmail(auth, email)
+//         feedback.textContent = "E-mail enviado!";
+//     } catch (err) {
+//         console.log("Ocorreu um problema ao validar: ", err)
+//         feedback.textContent = "Não foi possível realizar o envio, tente novamente mais tarde!";
+//     }
     
-})
+// })

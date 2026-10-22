@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+    <!-- container-fluid = adapta a largura do dispositivo | vh-100 = altura 100% | justify-content-center = justa no centro horizontalmente
+    align-items-center = ajusta no centro verticalmente | bg-light = cor "cinza" de fundo -->
+    <div class="position-relative container-fluid vh-100 d-flex justify-content-center align-items-center">
+
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-secondary z-0 overflow-hidden">
+            <video autoplay muted loop playsinline aria-hidden="true" tabindex="-1" class="">
+                <source src="../../documents/Video/video_login.mp4" type="video/mp4">
+            </video>
+        </div>
+        
+
+        <!-- col-12 = Ocupa a largura total em tela pequena | col-md-6 = tela média ocupa 6 colunas | col-lg-4 = tela grande ocupa 4 colunas
+        flex-column = organiza os elementos um em baixo do outro | p-5 = é o padding de todos os lados | shadow e rounded é sombra e borda redonda -->
+        <div class="z-3 col-12 col-md-6 col-lg-4 d-flex flex-column justify-content-center p-5 bg-white shadow rounded">     
+            <div id="divForm" class="w-100">
+            <h3 class="text-center mb-4">Registrar-se</h3>
+                
+                <form id="registerForm">
+                    <!-- <div class="mb-3">
+                        <label for="name" class="form-label">Nome Completo</label>
+                        <input id="name" type="text" class="form-control" required>
+                    </div> -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input id="email" type="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Senha</label>
+                        <input id="password" type="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar-se</button>
+                </form>
+                <button id="btnLogin" class="btn btn-outline-primary w-100 mt-2">Já tem uma conta? Faça login!</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="../../js/register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -9,3 +9,7 @@ const getAllEquipments = async (req,res) => {
         res.status(500).json({message :"erro ao buscar equipamentos"})
     };
 };
+
+exports.module = {
+    getAllEquipments
+}

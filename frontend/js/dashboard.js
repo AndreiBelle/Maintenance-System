@@ -1,7 +1,7 @@
 import { equipaments } from '../js/bd.js'
 import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
-import { auth } from "./firebase";
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
+import { auth } from "./firebase.js";
 const activeTotal = document.querySelector("#activesTotal");
 const preventiveTotal = document.querySelector("#preventiveTotal");
 const maintenceEquipamentsTotal = document.querySelector("#maintenceEquipamentsTotal");
@@ -11,17 +11,17 @@ const userInfo = document.querySelector("#userInfo");
 
 onAuthStateChanged(auth, (user)=> {
     if(!user) {
-        window.location.href = './login.html';
+        window.location.href = '../login.html';
         return;
     }
 
-    userInfo.textContent = `Usuário: ${user.email}`
+    userInfo.textContent = `Bem vindo! ${user.email}`
 })
 
 logoutButton.addEventListener('click', async (event) => {
     try{
         signOut(auth)
-        window.location.href = "./login.html"
+        window.location.href = "../login.html"
     } catch (err) {
         console.error("falha ao sair: ", err);
     }
