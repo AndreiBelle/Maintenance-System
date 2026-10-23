@@ -20,8 +20,26 @@ model Equipment {
   id Int @unique @default(autoincrement())
   name String
   patrimony String @unique
+  local String @default("Não informado")
   status String
   acquisitionDate DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Technicians {
+  id Int @unique @default(autoincrement())
+  name String
+  status String
+  position String
+}
+
+model Local {
+  id Int @unique @default(autoincrement())
+  cep String
+  city String
+  state String
+  cnpj String?
+  nameLocation String
+  sector String
 }
