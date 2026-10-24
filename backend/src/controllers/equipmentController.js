@@ -11,15 +11,16 @@ const getAllEquipments = async (req,res) => {
 };
 
 const createEquipment = async (req,res) => {
-    const {name, patrimony, status, acquisitionDate = new Date().toISOString()} = req.body
+    const {name, patrimony, local, status, acquisitionDate = new Date().toISOString()} = req.body
 
-    if(!name || !patrimony || !status) {
+    if(!name || !patrimony || !local || !status) {
         return res.status(400).json({message : "Dados marcados com * são obrigatórios!"})
     }
 
     const data = {
         name: name,
         patrimony: patrimony,
+        local: local,
         status: status,
         acquisitionDate: acquisitionDate,
     };
