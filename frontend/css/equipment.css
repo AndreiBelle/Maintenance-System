@@ -1,0 +1,22 @@
+.Divbuttons {
+    padding: 5px;
+}
+
+.buttons {
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;   
+    color: white;
+    background-color: rgb(35, 36, 48);
+    transition: 0.3s;
+}
+
+.buttons:hover{
+    transform: scaleX(1.01);
+    background-color: transparent;
+    box-shadow: 
+        inset 0 0 0 1px black,    /* inset diciona sombra interna no botão pra ele não pula  */
+        2px 3px 4px rgb(158, 158, 158);
+    color: black;
+}

@@ -1,13 +1,16 @@
-import { equipaments } from '../js/bd.js'
 import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { auth } from "./firebase.js";
+
 const activeTotal = document.querySelector("#activesTotal");
 const preventiveTotal = document.querySelector("#preventiveTotal");
-const maintenceEquipamentsTotal = document.querySelector("#maintenceEquipamentsTotal");
+const corretiveTotal = document.querySelector("#corretiveTotal");
+const inactiveTotal = document.querySelector('#inactiveTotal')
+
 const searchInput = document.getElementById("searchInput");
 const logoutButton = document.querySelector("#logoutButton");
 const userInfo = document.querySelector("#userInfo");
+
 
 onAuthStateChanged(auth, (user)=> {
     if(!user) {
@@ -27,20 +30,16 @@ logoutButton.addEventListener('click', async (event) => {
     }
 })
 
-console.log("Carregou o Dashboard");
 
-const systemName = "Sistema de Controle de Manuteção";
-
-preventiveTotal.textContent = 1
-
-
-function dashboardRefresh() {
-    const actives = equipaments.filter(equipament => equipament.status === "active").length;
+async function dashboardRefresh() {
     
-    const inMaintence = equipaments.filter(equipament => equipament.status === "maintence").length;
+    const data = await fetch('http://localhost:3000/equipments');
+    const response = await data.json();
+
+    console.log(response);
 
     activeTotal.textContent = actives;
-    maintenceEquipamentsTotal.textContent = inMaintence;
+    corretiveTotal.textContent = inMaintence;
 
     console.log("Dashboard Atualizado!")
 }

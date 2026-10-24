@@ -1,7 +1,30 @@
+import { auth } from './firebase.js';
+import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 const techniciansTable = document.querySelector('#techniciansTable');
 const btnNewTechnicians = document.querySelector('#btnNewTechnicians');
 const technicianModel = document.querySelector('#technicianModel');
-const modal = new bootstrap.Modal(technicianModel);
+// const modal = new bootstrap.Modal(technicianModel);
+const logoutButton = document.querySelector("#logoutButton");
+const userInfo = document.querySelector("#userInfo");
+
+onAuthStateChanged(auth, (user)=> {
+    if(!user) {
+        window.location.href = '../../login.html';
+        return;
+    }
+
+    userInfo.textContent = `Bem vindo! ${user.email}`
+})
+
+logoutButton.addEventListener('click', async (event) => {
+    try{
+        signOut(auth)
+        window.location.href = "../login.html"
+    } catch (err) {
+        console.error("falha ao sair: ", err);
+    }
+})
 
 const technicians = [
     {id:1,
@@ -44,8 +67,8 @@ const techniciansTableRender = (list) => {
     });
 }
 
-techniciansTableRender(technicians)
+// techniciansTableRender(technicians)
 
-btnNewTechnicians.addEventListener('click', () => {
-    modal.show();
-})
+// btnNewTechnicians.addEventListener('click', () => {
+//     modal.show();
+// })

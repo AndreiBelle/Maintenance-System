@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Sistema de Manutenção</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css//dashboard.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/forms.css">
 </head>
@@ -27,7 +27,7 @@
 
         <div class="row">
             <aside id="menuLateral" class="col-md-3 col-lg-2 bg-dark text-white min-vh-100
-            offcanvas-md offcanvas-start z-3" tabindex="-1">
+            offcanvas-md offcanvas-start" tabindex="-1">
             
                 <div class="offcanvas-header d-md-none">
                     <h5 class="offcanvas-title text-white">Menu</h5>
@@ -35,20 +35,21 @@
                 </div>
 
                 <div class="offcanvas-body d-flex flex-column">
-                    <strong id="userInfo" class="text-center"></strong>
+                    <strong id="userInfo" class="text-center mt-3"></strong>
                     <nav class="nav flex-column">
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Dashboard</a>
-                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../pages/equipaments/equipaments.html">Equipamento</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../pages/equipments/equipments.html">Equipamento</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../pages/technicians/technicians.html">Tecnicos</a>
                     </nav>
-                    <div class="d-flex mt-auto">
+                    <div class="d-flex mt-auto mt-lg-5">
                         <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
                     </div>
                     
                 </div>
             </aside>
             <main class="col-md-9 col-lg-10 p-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Dashboard - Sistema de Manutenção</h1>
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
                         <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar equipamento">
@@ -61,27 +62,35 @@
                 </form>
 
                 <div class="row g-4 mb-4">
-                    <div class="col-md-4">
+                    <div class="col-6 col-md-3">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6>Equipamentos Ativos</h6>
-                                <h2 id="activesTotal">10</h2>
+                                <h2 id="activesTotal"></h2>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-6 col-md-3">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6>Manutenção Preventiva</h6>
-                                <h2 id="preventiveTotal">15</h2>
+                                <h2 id="preventiveTotal"></h2>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-6 col-md-3">
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <h6>Em Manutenção</h6>
-                                <h2 id="maintenceEquipamentsTotal">12</h2>
+                                <h6>Manutenção Corretiva</h6>
+                                <h2 id="corretiveTotal"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6>Equipamentos Inativos</h6>
+                                <h2 id="inactiveTotal"></h2>
                             </div>
                         </div>
                     </div>
@@ -111,7 +120,6 @@
                 </div>
             </main>
         </div>
-
 
     </div>
 

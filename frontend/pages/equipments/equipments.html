@@ -6,26 +6,52 @@
     <title>Equipamentos - Sistema de Manutenção</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/forms.css">
+    <link rel="stylesheet" href="../../css/equipment.css">
+    
 </head>
 <body class="bg-light">
 
     <div class="container-fluid">
+        <div class="row bg-dark text-white p-3 d-md-none align-items-center">
+            <div class="col-9">
+                <span class="">Sistema de Manutenção</span>
+            </div>
+            <div class="col-3 text-end">
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" 
+                data-bs-target="#menuLateral" aria-controls="menuLateral">
+                    ☰ Menu
+                </button>                
+            </div>
+        </div>
 
         <div class="row">
-            <aside class="col-md-3 col-lg-2 bg-dark text-white min-vh-100">
-                <nav class="nav flex-column">
-                    <a class="nav-link text-white active" href="../dashboard.html">Dashboard</a>
-                    <a class="nav-link text-white" href="#">Equipamento</a>
-                    <a class="nav-link text-white" href="#">Categorias</a>
-                    <a class="nav-link text-white" href="../technicians/technicians.html">Tecnicos</a>
-                </nav>
+            <aside id="menuLateral" class="col-md-3 col-lg-2 bg-dark text-white min-vh-100
+            offcanvas-md offcanvas-start" tabindex="-1">
+            
+                <div class="offcanvas-header d-md-none">
+                    <h5 class="offcanvas-title text-white">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Close"></button>
+                </div>
+
+                <div class="offcanvas-body d-flex flex-column mt-3">
+                    <strong id="userInfo" class="text-center"></strong>
+                    <nav class="nav flex-column">
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../dashboard.html">Dashboard</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Equipamento</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../technicians/technicians.html">Tecnicos</a>
+                    </nav>
+                    <div class="d-flex mt-auto mt-lg-5">
+                        <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
+                    </div>
+                    
+                </div>
             </aside>
             <main class="col-md-9 col-lg-10 p-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Equipamentos - Sistema de Manutenção</h1>
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Pesquisar equipamento">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar equipamento">
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary w-100">
@@ -34,50 +60,52 @@
                     </div>
                 </form>
 
-                <div class="row g-4 mb-4">
+                <div class="row g-4 mb-2">
                     <div class="col-md-4">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <h6>Equipamentos Ativos</h6>
-                                <h2 id="activeTotal">#</h2>
+                                <h2 id="activesTotal">500</h2>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h6>Manutenção Preventiva</h6>
-                                <h2 id="maintenceEquipamentsTotal">0</h2>
-                            </div>
-                        </div>
+                    <div class="col-12 col-md-8 d-flex flex-column gap-2 Divbuttons">
+                        <button id="btnNewEquipament" class="buttons">Novo Equipamento</button>
+                        <button id="btnNewLocal" class="buttons">Novo Local</button>
                     </div>
                 </div>
                 <div class="row">
-                    <table class="table table-striped table-hover flex text-center">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Equipamento</th>
                                 <th>Local</th>
                                 <th>Status</th>
-                                <th>Número de Série</th>
-                                <th>Ações</th>
+                                <th>Editar</th>
                             </tr>
                         </thead>
                         <tbody id="equipmentsTable">
+                            <tr>
+                                <td>Empacotadora</td>
+                                <td>Setor Peru A1</td>
+                                <td>Ativo</td>
+                            </tr>
+                            <tr>
+                                <td>Empacotadora Bandeja</td>
+                                <td>Setor Peru A1</td>
+                                <td>Manutenção</td>
+                            </tr>
+                                
+                            
                         </tbody>
                     </table>
-                </div>
-
-                <div class="row">
-                    <button id="btnNewEquipament" class="btn btn-primary">Novo Equipamento</button>
-                    <button id="btnNewLocal" class="btn btn-info g-3">Novo Local</button>
                 </div>
 
                 <div class="modal fade" id="equipamentModel" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">
+                                <h5 class="modal-title" id="modal-title">
                                     Novo equipamento
                                 </h5>
                                 <button type="button"
@@ -87,7 +115,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <label for="equipamentName">Nome do Equipamento</label>
+                                <label for="equipamentName">Nome do Equipamento *</label>
                                 <input
                                 type="text"
                                 name="nome-equipamento"
@@ -95,7 +123,7 @@
                                 class="form-control mb-4"
                                 placeholder="Nome Equipamento"
                                 >
-                                <label for="equipamentSerie">Nº de Série do Equipamento</label>
+                                <label for="equipamentSerie">Nº de Série do Equipamento *</label>
                                 <input
                                 type="text"
                                 id="equipamentSerie"
@@ -107,14 +135,14 @@
                                 type="text"
                                 id="equipamentLocal"
                                 class="form-control mb-4"
-                                placeholder="Local onde o equipamento está estar localizado"
+                                placeholder="Local onde o equipamento está localizado"
                                 >
                                 <label for="equipamentStatus" class="form-label">Status do Equipamento</label>
                                 <select class="form-select mb-4" id="equipamentStatus" name="status-equipamento">
                                     <option selected disabled value="">Selecione o status...</option>
                                     <option value="Ativo">Ativo</option>
-                                    <option value="Em Manutenção">Em Manutenção</option>
-                                    <option value="Inativo">Inativo</option>
+                                    <option value="Em Manutenção">Manutenção Corretiva</option>
+                                    <option value="Inativo">Manutenção Preventiva</option>
                                 </select>
 
                                 <button type="button"
@@ -129,16 +157,15 @@
             </main>
         </div>
 
-
     </div>
 
-    <footer>
-        <p>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</p>
+    <footer class="d-flex align-items-center justify-content-center bg-dark text-white">
+        <small>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    <script type="module" src="../../js/equipaments.js"></script>
+    <script type="module" src="../../js/equipments.js"></script>
 </body>
 </html>

@@ -3,26 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistema de Manutenção</title>
+    <title>Técnicos - Sistema de Manutenção</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css//dashboard.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/forms.css">
 </head>
 <body class="bg-light">
 
     <div class="container-fluid">
+        <div class="row bg-dark text-white p-3 d-md-none align-items-center">
+            <div class="col-9">
+                <span class="">Sistema de Manutenção</span>
+            </div>
+            <div class="col-3 text-end">
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" 
+                data-bs-target="#menuLateral" aria-controls="menuLateral">
+                    ☰ Menu
+                </button>                
+            </div>
+        </div>
 
         <div class="row">
-            <aside class="col-md-3 col-lg-2 bg-dark text-white min-vh-100">
-                <nav class="nav flex-column">
-                    <a class="nav-link text-white active" href="../dashboard.html">Dashboard</a>
-                    <a class="nav-link text-white" href="../equipaments/equipaments.html">Equipamento</a>
-                    <a class="nav-link text-white" href="#">Categorias</a>
-                    <a class="nav-link text-white" href="#">Tecnicos</a>
-                </nav>
+            <aside id="menuLateral" class="col-md-3 col-lg-2 bg-dark text-white min-vh-100
+            offcanvas-md offcanvas-start" tabindex="-1">
+            
+                <div class="offcanvas-header d-md-none">
+                    <h5 class="offcanvas-title text-white">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Close"></button>
+                </div>
+
+                <div class="offcanvas-body d-flex flex-column">
+                    <strong id="userInfo" class="text-center mt-3"></strong>
+                    <nav class="nav flex-column">
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../dashboard.html">Dashboard</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../../pages/equipments/equipments.html">Equipamento</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Tecnicos</a>
+                    </nav>
+                    <div class="d-flex mt-auto mt-lg-5">
+                        <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
+                    </div>
+                    
+                </div>
             </aside>
             <main class="col-md-9 col-lg-10 p-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Técnicos - Sistema de Manutenção</h1>
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
                         <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar equipamento">
@@ -83,19 +108,76 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="col-12 d-flex flex-column gap-2 Divbuttons">
+                    <button id="btnNewEquipament" class="buttons">Novo Equipamento</button>
+                    <button id="btnNewLocal" class="buttons">Novo Local</button>
+                </div>
+
+                <div class="modal fade" id="equipamentModel" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Novo equipamento
+                                </h5>
+                                <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"    
+                                >
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="equipamentName">Nome do Equipamento</label>
+                                <input
+                                type="text"
+                                name="nome-equipamento"
+                                id="equipamentName"
+                                class="form-control mb-4"
+                                placeholder="Nome Equipamento"
+                                >
+                                <label for="equipamentSerie">Nº de Série do Equipamento</label>
+                                <input
+                                type="text"
+                                id="equipamentSerie"
+                                class="form-control mb-4"
+                                placeholder="Número de série do equipamento"
+                                >
+                                <label for="equipamentLocal">Local</label>
+                                <input
+                                type="text"
+                                id="equipamentLocal"
+                                class="form-control mb-4"
+                                placeholder="Local onde o equipamento está localizado"
+                                >
+                                <label for="equipamentStatus" class="form-label">Status do Equipamento</label>
+                                <select class="form-select mb-4" id="equipamentStatus" name="status-equipamento">
+                                    <option selected disabled value="">Selecione o status...</option>
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Em Manutenção">Em Manutenção</option>
+                                    <option value="Inativo">Inativo</option>
+                                </select>
+
+                                <button type="button"
+                                id="btnSaveEquipament"
+                                class="btn btn-success"
+                                >Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
 
 
     </div>
 
-    <footer>
-        <p>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</p>
+    <footer class="d-flex align-items-center justify-content-center bg-dark text-white">
+        <small>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</small>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    <script type="module" src="../js/dashboard.js"></script>
+    <script type="module" src="../../js/technicians.js"></script>
 </body>
 </html>
