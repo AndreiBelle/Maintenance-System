@@ -2,8 +2,7 @@ import { auth } from './firebase.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 
-const getEquipments = 'http://localhost:3000/equipments';
-const postEquipments = 'http://localhost:3000/equipments/cadastro';
+const endPoint = 'http://localhost:3000/equipments';
 
 const btnNewEquipament = document.getElementById("btnNewEquipament");
 const logoutButton = document.querySelector("#logoutButton");
@@ -24,12 +23,49 @@ const equipmentPatrimony = document.getElementById("equipmentPatrimony");
 const equipamentLocal = document.getElementById("equipamentLocal");
 const equipamentStatus = document.getElementById("equipamentStatus");
 
+async function loadEquipments() {
+    try{
+
+        const currentUser = auth.currentUser;
+        
+        if(!currentUser) {
+            window.location.href = '../../login.html';
+            return;
+        }
+        const idToken = await currentUser.getIdToken();
+        
+        const response = await fetch(endPoint,{
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+
+        if (response.status == 401) {
+            window.location.href = "./login.html";
+            return;
+        }
+
+        if(!response.ok) {
+            throw new Error("Falha ao carregar equipamentos")
+        }
+
+        const equipaments = await response.json();
+
+        equipamentsTableRender(equipaments);
+
+    } catch (err) {
+        console.error("Erro ao caregar equipamentos: ", err);
+    }
+}
+
 
 onAuthStateChanged(auth, (user)=> {
     if(!user) {
         window.location.href = '../../login.html';
         return;
     }
+
+    // loadEquipments();
 
     userInfo.textContent = `Bem vindo! ${user.email}`
 })
@@ -44,12 +80,12 @@ logoutButton.addEventListener('click', async () => {
 })
 
 // equipamentsTable.addEventListener('click', (event) => {
-//     if (event.target.classList.contains('btn-delete')) {
-//         const idEquipamentDelete = Number(event.target.dataset.id);
-//         equipamentDelete(idEquipamentDelete);
+//     if (event.target.classList.contains('btnEdit')) {
+//         const equipmentId = Number(event.target.dataset.id);
+        
+//         openModalEdit(equipmentId);
 //     }
-//     equipamentsTableRender(equipaments);
-//     dashboardRefresh();
+    
 // });
 
 btnNewEquipament.addEventListener("click", () => {
@@ -84,6 +120,9 @@ btnSave.addEventListener("click", async (event) => {
         console.warn("Ocorreu um erro:", err.message);
         alert(err.message);
     }
+
+    equipamentsTableRender();
+    dashboardRefresh();
     
 })
 
@@ -92,10 +131,18 @@ async function saveEquipments(equipment) {
         if (!equipment || !equipment.name) {
             throw new Error("Nome de equipamento não informado.");
         }
+        const currentUser = auth.currentUser;
+        
+        if(!currentUser) {
+            window.location.href = './login.html';
+            return;
+        }
+        const idToken = await currentUser.getIdToken();
 
-        const data = await fetch(postEquipments, {
+        const data = await fetch(endPoint, {
             method: 'POST',
             headers: {
+                Authorization: `Bearer ${idToken}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(equipment)
@@ -117,9 +164,20 @@ async function saveEquipments(equipment) {
 
 async function equipamentsTableRender() {
     equipamentsTable.innerHTML = "";
+    const currentUser = auth.currentUser;
+        
+    // if(!currentUser) {
+    //     window.location.href = './login.html';
+    //     return;
+    // }
+    const idToken = await currentUser.getIdToken();
 
     try{
-        const data = await fetch(getEquipments);
+        const data = await fetch(endPoint, {
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
         const response = await data.json();
 
         response.forEach(equipment => {
@@ -143,8 +201,19 @@ async function equipamentsTableRender() {
 equipamentsTableRender();
 
 async function dashboardRefresh() {
+    // const currentUser = auth.currentUser;
+        
+    // if(!currentUser) {
+    //     window.location.href = '../../login.html';
+    //     return;
+    // }
+    const idToken = await currentUser.getIdToken();
     
-    const data = await fetch(getEquipments);
+    const data = await fetch(endPoint, {
+        headers: {
+            Authorization: `Bearer ${idToken}`
+        }
+    });
     const response = await data.json();
 
     activesTotal.textContent = response.filter(response => response.status !== "Inactive").length;
@@ -157,26 +226,68 @@ dashboardRefresh()
 
 
 
-// function equipamentDelete(id) {
-//     const index = equipaments.findIndex(equipament => equipament.id === id
-//     );
+async function equipamentDelete(id) {
+    if(!id) {
+        console.error("ID não encontrado");
+    }
+    // const currentUser = auth.currentUser;
+        
+    // if(!currentUser) {
+    //     window.location.href = './login.html';
+    //     return;
+    // }
+    const idToken = await currentUser.getIdToken();
 
-//     if (index === -1) {
-//         console.error("Equipamento não encontrado: ", id)
-//     }
+    try {
+        const data = await fetch(`endPoint/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
 
-//     equipaments.splice(index,1);
-//     equipamentsTableRender(equipaments);
-//     dashboardRefresh();
-
-// }
+        equipamentsTableRender();
+        dashboardRefresh();
+    } catch (err) {
+        console.error("Ocorreu um erro ao excluir o equipamento: "+ id.name+ `Erro: `+err)
+    }
+}
 
 function openModalEdit(id) {
     modal.show();
     btnSave.textContent = "Editar";
     modalTitle.textContent = "Editar Equipamento";
     btnDeleteEquipament.classList.remove('d-none');
+
+    btnDeleteEquipament.addEventListener('click', async (event, id) => {
+        event.preventDefault();
+        const currentUser = auth.currentUser;
+        
+        // if(!currentUser) {
+        //     window.location.href = './login.html';
+        //     return;
+        // }
+        const idToken = await currentUser.getIdToken();
+
+      try {
+        const deleteEquipment = await fetch(`${endPoint}/${id}`,{
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+
+        if(deleteEquipment.ok) {
+            console.log('Deletado!');
+            modal.hide();
+            dashboardRefresh();
+            equipamentsTableRender();
+        }
+      } catch (err) {
+        console.error('Erro ao deletar equipamento: '+err);
+      }
+    });
+
     return;
-        // CRIAR ROTA NO BACK E CONTINUAR LÓGIA DA FUNCTION
-        // LEMBRAR DE TRATAR 
+        
 }

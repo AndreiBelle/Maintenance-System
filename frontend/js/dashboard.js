@@ -2,7 +2,7 @@ import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-aut
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { auth } from "./firebase.js";
 
-const getEquipments = 'http://localhost:3000/equipments';
+const endPoint = 'http://localhost:3000/equipments';
 
 const activeTotal = document.querySelector("#activesTotal");
 const preventiveTotal = document.querySelector("#preventiveTotal");
@@ -15,12 +15,52 @@ const userInfo = document.querySelector("#userInfo");
 const equipamentsTable = document.querySelector("#equipmentsTable");
 
 
+
+async function loadEquipments() {
+    try{
+
+        const currentUser = auth.currentUser;
+        
+        if(!currentUser) {
+            window.location.href = './login.html';
+            return;
+        }
+        const idToken = await currentUser.getIdToken();
+        
+        const response = await fetch(endPoint,{
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+
+        if (response.status == 401) {
+            window.location.href = "./login.html";
+            return;
+        }
+
+        if(!response.ok) {
+            throw new Error("Falha ao carregar equipamentos")
+        }
+
+        const equipaments = await response.json();
+
+        equipamentsTableRender(equipaments);
+
+    } catch (err) {
+        console.error("Erro ao caregar equipamentos: ", err);
+    }
+}
+
+
+
 onAuthStateChanged(auth, (user)=> {
     if(!user) {
         window.location.href = '../login.html';
         return;
     }
 
+    loadEquipments();
+    dashboardRefresh()
     userInfo.textContent = `Bem vindo! ${user.email}`
 })
 
@@ -35,9 +75,21 @@ logoutButton.addEventListener('click', async () => {
 
 
 async function dashboardRefresh() {
+    const currentUser = auth.currentUser;
+        
+    if(!currentUser) {
+        window.location.href = './login.html';
+        return;
+    }
+    const idToken = await currentUser.getIdToken();
 
     try{
-        const data = await fetch(getEquipments);
+        const data = await fetch(endPoint,{
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+;
         const response = await data.json();
 
         activeTotal.textContent = response.filter(response => response.status !== "Inactive").length;
@@ -53,7 +105,6 @@ async function dashboardRefresh() {
         console.error("Occoreu um erro interno, por favor tente novamente mais tarde: "+err)
     }
 }
-dashboardRefresh()
 
 
 
@@ -69,9 +120,22 @@ searchInput.addEventListener("input", () => {
 
 async function equipamentsTableRender() {
     equipamentsTable.innerHTML = "";
+    const currentUser = auth.currentUser;
+        
+        if(!currentUser) {
+            window.location.href = './login.html';
+            return;
+        }
+        const idToken = await currentUser.getIdToken();
 
     try{
-        const data = await fetch(getEquipments);
+
+        const data = await fetch(endPoint,{
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+;
         const response = await data.json();
 
         response.forEach(equipment => {
@@ -92,4 +156,3 @@ async function equipamentsTableRender() {
         console.error("Occoreu um erro interno, por favor tente novamente mais tarde: "+err)
     }
 }
-equipamentsTableRender();

@@ -29,11 +29,17 @@ const update = async (id, data) => {
 };
 
 const deleteEquipment = async (id) => {
-    return await prisma.equipment.delete({
+    try {
+        return await prisma.equipment.delete({
         where: {
             id
         }
     });
+    } catch (err) {
+        console.log("ID RECEBIDO: ",id)
+        throw new Error('Erro ao deletar Equipamento'+id);
+    }
+   
 };
 
 module.exports = {getAllEquipments, getEquipmentById, createEquipment, update, deleteEquipment}
