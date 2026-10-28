@@ -1,6 +1,7 @@
 import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
-import { auth } from "./firebase.js";
+import { auth } from "./services/firebase.js";
+import { verifyTokenAndUser } from "./services/authService.js"
 
 const endPoint = 'http://localhost:3000/equipments';
 
@@ -18,14 +19,7 @@ const equipamentsTable = document.querySelector("#equipmentsTable");
 
 async function loadEquipments() {
     try{
-
-        const currentUser = auth.currentUser;
-        
-        if(!currentUser) {
-            window.location.href = './login.html';
-            return;
-        }
-        const idToken = await currentUser.getIdToken();
+        const idToken = await verifyTokenAndUser();
         
         const response = await fetch(endPoint,{
             headers: {
@@ -75,13 +69,7 @@ logoutButton.addEventListener('click', async () => {
 
 
 async function dashboardRefresh() {
-    const currentUser = auth.currentUser;
-        
-    if(!currentUser) {
-        window.location.href = './login.html';
-        return;
-    }
-    const idToken = await currentUser.getIdToken();
+    const idToken = await verifyTokenAndUser();
 
     try{
         const data = await fetch(endPoint,{

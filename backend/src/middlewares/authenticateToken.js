@@ -21,12 +21,12 @@ async function authenticateToken(req, res, next) {
 
         next();
     } catch (err) {
-        console.error("Falha na validação do token: ", erro.code);
+        console.error("Falha na validação do token: ", err.code);
 
         return res.status(401).json({message: "Sessão inválida ou expirada."})
     }
 }
 
 module.exports = {
-    authenticateToken,
+    authenticateToken
 }

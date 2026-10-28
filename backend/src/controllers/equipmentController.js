@@ -34,8 +34,10 @@ const createEquipment = async (req,res) => {
 
 }
 
-const deleteEquipment = async (id ,req, res) => { 
+const deleteEquipment = async (req, res) => { 
     try {
+        const id = req.params.id
+
         const equipment = await equipmentService.deleteEquipment(id);
         return res.status(204).send();
     } catch (err) {
@@ -51,9 +53,20 @@ const editEquipment = async (id, req, res) => {
         return res.status(400).json({message : "Erro ao receber o id do equipamento!"});
     }
 }
+
+const getEquipmentById = async (req, res) => {
+    try {
+        const id = req.params.id
+         const equipment = await equipmentService.getEquipmentById(id);
+        return res.status(204).send();
+    } catch (err) {
+        console.error(err)
+    }
+}
 module.exports = {
     getAllEquipments,
     createEquipment,
     editEquipment,
-    deleteEquipment
+    deleteEquipment,
+    getEquipmentById
 }

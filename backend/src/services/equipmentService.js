@@ -32,12 +32,12 @@ const deleteEquipment = async (id) => {
     try {
         return await prisma.equipment.delete({
         where: {
-            id
+            id: Number(id)
         }
     });
     } catch (err) {
         console.log("ID RECEBIDO: ",id)
-        throw new Error('Erro ao deletar Equipamento'+id);
+        throw new Error('Erro ao deletar Equipamento '+id);
     }
    
 };
