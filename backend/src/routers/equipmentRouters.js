@@ -7,6 +7,6 @@ router.get('/', authenticateToken, getAllEquipments);
 router.post('/', createEquipment);
 router.delete(`/:id`, authenticateToken, deleteEquipment);
 router.put('/:id', authenticateToken, editEquipment);
-// router.get('/:id', authenticateToken, getEquipmentById)
+router.get('/:id', authenticateToken, getEquipmentById)
 
 module.exports = router;

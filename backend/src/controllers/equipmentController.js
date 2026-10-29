@@ -57,8 +57,13 @@ const editEquipment = async (id, req, res) => {
 const getEquipmentById = async (req, res) => {
     try {
         const id = req.params.id
-         const equipment = await equipmentService.getEquipmentById(id);
-        return res.status(204).send();
+        const equipment = await equipmentService.getEquipmentById(id);
+
+        if (!equipment) {
+            return res.status(404).json({ message: "Equipamento não encontrado" });
+        }
+
+        res.json(equipment);
     } catch (err) {
         console.error(err)
     }

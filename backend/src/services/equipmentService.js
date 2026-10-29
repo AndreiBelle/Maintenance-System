@@ -10,7 +10,7 @@ const getAllEquipments = async () => {
 const getEquipmentById = async (id) => {
     return await prisma.equipment.findUnique({
         where: {
-            id
+            id: Number(id)
         }
     });
 };
