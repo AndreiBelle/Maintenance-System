@@ -6,6 +6,8 @@ import { verifyTokenAndUser } from './services/authService.js'
 
 const endPoint = 'http://localhost:3000/equipments';
 
+let isLoading = false;
+
 const btnNewEquipament = document.getElementById("btnNewEquipament");
 const logoutButton = document.querySelector("#logoutButton");
 const btnSave = document.getElementById("btnSaveEquipament");
@@ -28,7 +30,7 @@ const equipamentStatus = document.getElementById("equipamentStatus");
 async function loadEquipments() {
     try{
         const idToken = await verifyTokenAndUser();
-        
+        console.log(idToken);
 
         const response = await fetch(endPoint,{
             headers: {
@@ -62,7 +64,7 @@ onAuthStateChanged(auth, (user)=> {
     }
 
     loadEquipments();
-    dashboardRefresh()
+    dashboardRefresh();
 
     userInfo.textContent = `Bem vindo! ${user.email}`
 })
@@ -85,10 +87,86 @@ btnNewEquipament.addEventListener("click", () => {
 equipamentsTable.addEventListener('click', (event => {
     if (event.target.classList.contains('btnEdit')) {
         const equipmentId = Number(event.target.dataset.id);
-        
+        loadingData(equipmentId);
+        validaLoading(equipmentId);
+    }    
+}));
+
+function validaLoading(equipmentId) {
+    if (isLoading != false) {
+        console.log("Carregando dados...")
+        setTimeout(validaLoading, 1000)
+    } else {
         openModalEdit(equipmentId);
     }
-}))
+}
+
+async function loadingData(id) {
+    isLoading = true
+
+    if (!id) {
+        console.error("Não foi informado um id: "+id);
+    }
+
+    const idToken = await verifyTokenAndUser();
+
+    try {
+        const data = await fetch(`${endPoint}/${id}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+
+        if(data.ok) {
+            const response = await data.json()
+            equipamentName.value = await response.name;
+        }
+
+        if(!data.ok) {
+            return console.error(data.message); 
+        }
+
+    } catch (err) {
+        console.error("Erro ao buscar dados: ", err)
+    } finally {
+        isLoading = false;
+    }
+}
+
+function openModalEdit(id) {
+    modal.show();
+    btnSave.textContent = "Editar";
+    modalTitle.textContent = "Editar Equipamento";
+    btnDeleteEquipament.classList.remove('d-none');
+    
+
+    btnDeleteEquipament.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const idToken = await verifyTokenAndUser();
+
+      try {
+
+        const deleteEquipment = await fetch(`${endPoint}/${id}`,{
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            }
+        });
+
+        if(deleteEquipment.ok) {
+            console.log('Deletado!');
+            modal.hide();
+            dashboardRefresh();
+            equipamentsTableRender();
+            return;
+        }
+      } catch (err) {
+        console.error('Erro ao deletar equipamento: '+err);
+      }
+    });
+        
+}
 
 btnSave.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -188,7 +266,7 @@ async function dashboardRefresh() {
     });
     const response = await data.json();
 
-    activesTotal.textContent = response.filter(response => response.status !== "Inactive").length;
+    activesTotal.textContent = response.filter(response => response.status !== "Inativo").length;
 
     console.log(response);
 
@@ -218,57 +296,3 @@ async function equipamentDelete(id) {
     }
 }
 
-async function loadingData(id) {
-    if (!id) {
-        console.error("Não foi informado um id: "+id);
-    }
-
-    const idToken = await verifyTokenAndUser();
-
-    try {
-        const data = await fetch(`endPoint/${id}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${idToken}`
-            }
-        });
-
-    } catch (err) {
-        console.error("Erro ao buscar dados: ", err)
-    }
-}
-
-function openModalEdit(id) {
-    modal.show();
-    btnSave.textContent = "Editar";
-    modalTitle.textContent = "Editar Equipamento";
-    btnDeleteEquipament.classList.remove('d-none');
-    
-
-    btnDeleteEquipament.addEventListener('click', async (event) => {
-        event.preventDefault();
-        const idToken = await verifyTokenAndUser();
-
-      try {
-        const deleteEquipment = await fetch(`${endPoint}/${id}`,{
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${idToken}`
-            }
-        });
-
-        if(deleteEquipment.ok) {
-            console.log('Deletado!');
-            modal.hide();
-            dashboardRefresh();
-            equipamentsTableRender();
-            return;
-        }
-      } catch (err) {
-        console.error('Erro ao deletar equipamento: '+err);
-      }
-    });
-
-
-        
-}

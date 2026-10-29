@@ -14,4 +14,4 @@ export async function verifyTokenAndUser() {
     } catch (err) {
         console.error("Sessão expirada ou inválida! ",err);
     }
-}
+};
