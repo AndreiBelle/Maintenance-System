@@ -25,7 +25,7 @@ function showNotify(message, type = 'success') {
         document.body.appendChild(container);
     }
 
-    // ID único para cada toast
+    // ID único para cada toast, se não ele iria criar um por página ai se o usuário clicar em vário locais ele iria sobrescrever travando ou "bugando" o toast
     const toastId = 'toast_' + Date.now();
 
     // Estrutura HTML do Toast do Bootstrap
@@ -44,9 +44,9 @@ function showNotify(message, type = 'success') {
     // Insere o toast no container
     container.insertAdjacentHTML('beforeend', toastHTML);
 
-    // Inicializa e exibe o toast usando a API do Bootstrap (fecha sozinho após 4 segundos/4000ms)
+    // Aqui inicializa e exibe o toast usando a API do Bootstrap
     const toastElement = document.getElementById(toastId);
-    const bsToast = new bootstrap.Toast(toastElement, { delay: 4000 });
+    const bsToast = new bootstrap.Toast(toastElement, { delay: 3500 });
     bsToast.show();
 
     // Remove o elemento do DOM após ele desaparecer completamente para não acumular lixo
