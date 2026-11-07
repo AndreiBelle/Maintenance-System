@@ -3,7 +3,7 @@ const prisma = require('../database/prisma');
 
 const getAllEquipments = async () => {
     return await prisma.equipment.findMany({
-        orderBy:{id: "desc"}
+        orderBy: { id: "desc" }
     });
 };
 
@@ -22,24 +22,37 @@ const createEquipment = async (data) => {
 };
 
 const update = async (id, data) => {
-    return await prisma.equipment.update({
-        where: {id},
-        data
-    });
+    try {
+        const searchEquipment = await prisma.equipment.findUnique({
+            where: { patrimony: data.patrimony }
+        })
+
+        if (searchEquipment && searchEquipment.id !== Number(id)) {
+            throw new Error("Esse patrimônio já tem cadastro, verifique no sistema!");
+        }
+
+        return await prisma.equipment.update({
+            where: { id: Number(id) },
+            data
+        });
+    } catch (err) {
+        console.error("Erro no update:", err.message);
+        throw err;
+    }
+
 };
 
 const deleteEquipment = async (id) => {
     try {
         return await prisma.equipment.delete({
-        where: {
-            id: Number(id)
-        }
-    });
+            where: {
+                id: Number(id)
+            }
+        });
     } catch (err) {
-        console.log("ID RECEBIDO: ",id)
-        throw new Error('Erro ao deletar Equipamento '+id);
+        throw new Error('Erro ao deletar Equipamento '+err);
     }
-   
+
 };
 
-module.exports = {getAllEquipments, getEquipmentById, createEquipment, update, deleteEquipment}
+module.exports = { getAllEquipments, getEquipmentById, createEquipment, update, deleteEquipment }

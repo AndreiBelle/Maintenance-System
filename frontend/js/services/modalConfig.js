@@ -1,8 +1,8 @@
 /**
- * Config de parâmetros para exbir o modal de confirmação (Criando tipo um método)
- * @param {string} title titulo da confirmacao
- * @param {string} message mensagem para o usuário
- * @param {function} onConfirm passa a função que vai executar se o usuário clicar em não
+ * Config de parâmetros para exibir o modal de confirmação
+ * @param {string} title Título da confirmação
+ * @param {string} message Mensagem para o usuário
+ * @param {function} onConfirm Função executada se o usuário confirmar
  */
 function showConfirm(title, message, onConfirm) {
     // Remove qualquer modal de confirmação anterior para evitar duplicidade
@@ -13,11 +13,14 @@ function showConfirm(title, message, onConfirm) {
 
     const modalNew = document.getElementById('equipamentModel');
 
-    modalNew.classList.add('d-none')
+    // Oculta o outro modal se ele existir na tela
+    if (modalNew) {
+        modalNew.classList.add('d-none');
+    }
 
-    // Estrutura HTML do Modal do Bootstrap
+    // Estrutura HTML do Modal do Bootstrap (removido o atributo inválido backdrop="false")
     const modalHTML = `
-        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" backdrop="false">
+        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content shadow">
                     <div class="modal-header bg-danger text-white">
@@ -47,16 +50,36 @@ function showConfirm(title, message, onConfirm) {
     // Escuta o clique no botão de confirmação ("Sim, apagar")
     const confirmBtn = modalElement.querySelector('.id-btn-confirm');
     confirmBtn.addEventListener('click', () => {
-        // Executa a função que o usuário passou (ex: apagar o item)
+        // Executa a função passada por parâmetro (ex: apagar o item)
         onConfirm();
-        // Fecha o modal automaticamente
+        
+        // Fecha o modal programaticamente
         bsModal.hide();
-        modalNew.classList.remove('d-none');
+
+        // Restaura a visibilidade do outro modal
+        if (modalNew) {
+            modalNew.classList.remove('d-none');
+        }
     });
 
-    // Remove o modal do HTML assim que ele terminar de fechar para manter a página limpa
+    // Garante que, ao fechar (por Cancelar, X ou clique fora), o fundo cinza suma de vez
     modalElement.addEventListener('hidden.bs.modal', () => {
+        // Remove o elemento modal do DOM
         modalElement.remove();
+
+        // Garante que o outro modal volte a aparecer caso o usuário tenha cancelado
+        if (modalNew) {
+            modalNew.classList.remove('d-none');
+        }
+
+        // LIMPEZA DE SEGURANÇA: Remove qualquer backdrop cinza preso na tela e destrava o scroll do body
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
     });
 
     // Exibe o modal na tela

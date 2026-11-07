@@ -45,12 +45,12 @@ const deleteEquipment = async (req, res) => {
     }
 }
 
-const editEquipment = async (id, req, res) => {
+const editEquipment = async (req, res) => {
     try {
-        const equipment = await equipmentService.getEquipmentById(id);
+        const equipment = await equipmentService.update(req.params.id, req.body);
         return res.status(204).send();
     } catch (err) {
-        return res.status(400).json({message : "Erro ao receber o id do equipamento!"});
+        return res.status(400).json({message : `${err}`});
     }
 }
 
