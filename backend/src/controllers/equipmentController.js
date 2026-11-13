@@ -29,7 +29,15 @@ const createEquipment = async (req,res) => {
         await equipmentService.createEquipment(data);
         return res.status(201).json({message: "Equipamento cadastrado com sucesso!"});
     } catch (err) {
-        return res.status(500).json({message: "Erro ao processar os dados, por favor tente novamente amis tarde." + err});
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({
+                message: err.message
+            });
+        }
+
+        return res.status(500).json({
+            message: "Erro ao processar os dados, por favor tente novamente mais tarde."
+        });
     }
 
 }

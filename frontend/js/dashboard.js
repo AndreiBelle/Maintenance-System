@@ -1,146 +1,101 @@
-import { signOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
+import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { auth } from "./services/firebase.js";
-import { verifyTokenAndUser } from "./services/authService.js"
+import { verifyTokenAndUser } from "./services/authService.js";
 
 const endPoint = 'http://localhost:3000/equipments';
 
 const activeTotal = document.querySelector("#activesTotal");
 const preventiveTotal = document.querySelector("#preventiveTotal");
 const corretiveTotal = document.querySelector("#corretiveTotal");
-const inactiveTotal = document.querySelector('#inactiveTotal')
+const inactiveTotal = document.querySelector('#inactiveTotal');
 
 const searchInput = document.getElementById("searchInput");
 const logoutButton = document.querySelector("#logoutButton");
 const userInfo = document.querySelector("#userInfo");
 const equipamentsTable = document.querySelector("#equipmentsTable");
 
+let allEquipments = [];
 
-
-async function loadEquipments() {
-    try{
-        const idToken = await verifyTokenAndUser();
-        
-        const response = await fetch(endPoint,{
-            headers: {
-                Authorization: `Bearer ${idToken}`
-            }
-        });
-
-        if (response.status == 401) {
-            window.location.href = "./login.html";
-            return;
-        }
-
-        if(!response.ok) {
-            throw new Error("Falha ao carregar equipamentos")
-        }
-
-        const equipaments = await response.json();
-
-        equipamentsTableRender(equipaments);
-
-    } catch (err) {
-        console.error("Erro ao caregar equipamentos: ", err);
-    }
-}
-
-
-
-onAuthStateChanged(auth, (user)=> {
-    if(!user) {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
         window.location.href = '../login.html';
         return;
     }
 
-    loadEquipments();
-    dashboardRefresh()
-    userInfo.textContent = `Bem vindo! ${user.email}`
-})
+    userInfo.textContent = `Bem vindo! ${user.email}`;
+    await loadAndInitializeData(); 
+});
 
 logoutButton.addEventListener('click', async () => {
-    try{
-        signOut(auth)
-        window.location.href = "../login.html"
+    try {
+        await signOut(auth);
+        window.location.href = "../login.html";
     } catch (err) {
         console.error("falha ao sair: ", err);
     }
-})
+});
 
-
-async function dashboardRefresh() {
-    const idToken = await verifyTokenAndUser();
-
-    try{
-        const data = await fetch(endPoint,{
+async function loadAndInitializeData() {
+    try {
+        const idToken = await verifyTokenAndUser();
+        
+        const response = await fetch(endPoint, {
             headers: {
                 Authorization: `Bearer ${idToken}`
             }
         });
-;
-        const response = await data.json();
 
-        activeTotal.textContent = response.filter(response => response.status !== "Inactive").length;
-        inactiveTotal.textContent = response.filter(response => response.status == "Inactive").length;
-        preventiveTotal.textContent = response.filter(response => response.status == "Preventive").length;
-        corretiveTotal.textContent = response.filter(response => response.status == "Corrective").length;
-
-        console.log(response);
-
-        console.log("Dashboard Atualizado!")
-
-    } catch (err) {
-        console.error("Occoreu um erro interno, por favor tente novamente mais tarde: "+err)
-    }
-}
-
-
-
-searchInput.addEventListener("input", () => {
-    const term = searchInput.value.toLocaleLowerCase();
-
-    const result = equipaments.filter(equipament => 
-        equipament.name.toLocaleLowerCase().includes(term)
-
-    )
-    equipamentsTableRender(result)
-})
-
-async function equipamentsTableRender() {
-    equipamentsTable.innerHTML = "";
-    const currentUser = auth.currentUser;
-        
-        if(!currentUser) {
-            window.location.href = './login.html';
+        if (response.status === 401) {
+            window.location.href = "./login.html";
             return;
         }
-        const idToken = await currentUser.getIdToken();
 
-    try{
+        if (!response.ok) {
+            throw new Error("Falha ao carregar equipamentos");
+        }
 
-        const data = await fetch(endPoint,{
-            headers: {
-                Authorization: `Bearer ${idToken}`
-            }
-        });
-;
-        const response = await data.json();
+        allEquipments = await response.json();
 
-        response.forEach(equipment => {
+        dashboardRefresh(allEquipments);
+        equipamentsTableRender(allEquipments);
 
-        const row = document.createElement("tr");
-
-
-        row.innerHTML = `<td>${equipment.name}</td>
-        <td>${equipment.local}</td>
-        <td>${equipment.status}</td>
-        `
- 
-        equipamentsTable.appendChild(row);
-        });  
-
-        dashboardRefresh();
     } catch (err) {
-        console.error("Occoreu um erro interno, por favor tente novamente mais tarde: "+err)
+        console.error("Ocorreu um erro interno: ", err);
     }
 }
+
+function dashboardRefresh(data) {
+    activeTotal.textContent = data.filter(eq => eq.status !== "Inactive").length;
+    inactiveTotal.textContent = data.filter(eq => eq.status === "Inactive").length;
+    preventiveTotal.textContent = data.filter(eq => eq.status === "Preventive").length;
+    corretiveTotal.textContent = data.filter(eq => eq.status === "Corrective").length;
+}
+
+function equipamentsTableRender(data) {
+    equipamentsTable.innerHTML = "";
+
+    if (data.length === 0) {
+        equipamentsTable.innerHTML = `<tr><td colspan="3" style="text-align: center;">Nenhum equipamento encontrado.</td></tr>`;
+        return;
+    }
+
+    data.forEach(equipment => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${equipment.name}</td>
+            <td>${equipment.local}</td>
+            <td>${equipment.status}</td>
+        `;
+        equipamentsTable.appendChild(row);
+    });
+}
+
+searchInput.addEventListener("input", () => {
+    const term = searchInput.value.toLowerCase();
+
+    const result = allEquipments.filter(equipment => 
+        equipment.name.toLowerCase().includes(term)
+    );
+    
+    equipamentsTableRender(result);
+});

@@ -16,9 +16,26 @@ const getEquipmentById = async (id) => {
 };
 
 const createEquipment = async (data) => {
-    return await prisma.equipment.create({
-        data
-    });
+    try {
+        const patrimony = await prisma.equipment.findUnique({
+            where: {
+                patrimony: data.patrimony
+            }
+        })
+
+        if (patrimony) {
+            const error = new Error("Esse patrimônio já tem cadastro, verifique no sistema!");
+            error.statusCode = 409;
+            throw error;
+        }
+
+        return await prisma.equipment.create({
+            data
+        });
+    } catch (err) {
+        console.error("Erro ao criar:", err.message);
+        throw err;
+    }
 };
 
 const update = async (id, data) => {

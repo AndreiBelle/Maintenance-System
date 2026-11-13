@@ -131,13 +131,10 @@
                                 class="form-control mb-4"
                                 placeholder="Número do patrimônio do equipamento"
                                 >
-                                <label for="equipamentLocal">Local</label>
-                                <input
-                                type="text"
-                                id="equipamentLocal"
-                                class="form-control mb-4"
-                                placeholder="Local onde o equipamento está localizado"
-                                >
+                                <label for="equipamentLocal">Local *</label>
+                                <select id="equipamentLocal" class="form-select mb-4" required>
+                                    <option selected disabled value="">Selecione o local...</option>
+                                </select>
                                 <label for="equipamentStatus" class="form-label">Status do Equipamento</label>
                                 <select class="form-select mb-4" id="equipamentStatus" name="status-equipamento">
                                     <option selected disabled value="">Selecione o status...</option>
@@ -156,6 +153,34 @@
                                         id="btnDeleteEquipament"
                                         class="ms-auto d-none btn btn-outline-danger"
                                     >Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="localModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="localModalTitle">Novo Local</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="localCep">CEP *</label>
+                                <input type="text" id="localCep" name="localCep" class="form-control mb-4" maxlength="9" placeholder="00000-000">
+                                <label for="localCity">Cidade *</label>
+                                <input type="text" id="localCity" name="localCity" class="form-control mb-4" placeholder="Cidade">
+                                <label for="localEstado">Estado *</label>
+                                <input type="text" id="localEstado" name="localEstado" class="form-control mb-4" placeholder="Estado">
+                                <label for="localCnpj">CNPJ</label>
+                                <input type="text" id="localCnpj" maxlength="14" name="localCnpj" class="form-control mb-4" placeholder="CNPJ da empresa que se encontra o equipamento (somente números)">
+                                <label for="localNameLocation">Nome da Localização *</label>
+                                <input type="text" id="localNameLocation" name="localNameLocation" class="form-control mb-4" placeholder="Nome/Apelido de exibição Localização">
+                                <label for="localSector">Setor *</label>
+                                <input type="text" id="localSector" name="localSector" class="form-control mb-4" placeholder="Setor que o equipamento se encontra">
+                                <div class="d-flex p-2">
+                                    <button type="button" id="btnSaveLocal" class="btn btn-success">Salvar Local</button>
                                 </div>
                             </div>
                         </div>

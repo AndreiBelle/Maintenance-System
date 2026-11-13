@@ -4,7 +4,7 @@ const { getAllEquipments, createEquipment, deleteEquipment, editEquipment, getEq
 const { authenticateToken } = require("../middlewares/authenticateToken");
 
 router.get('/', authenticateToken, getAllEquipments);
-router.post('/', createEquipment);
+router.post('/', authenticateToken, createEquipment);
 router.delete(`/:id`, authenticateToken, deleteEquipment);
 router.put('/:id', authenticateToken, editEquipment);
 router.get('/:id', authenticateToken, getEquipmentById)
