@@ -36,8 +36,9 @@
                     <nav class="nav flex-column">
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../dashboard.html">Dashboard</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../equipments/equipments.html">Equipamento</a>
-                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../categories/categories.html">Categorias</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Técnicos</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../work-orders/work-orders.html">Ordens de Serviço</a>
                     </nav>
                     <div class="d-flex mt-auto mt-lg-5">
                         <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
@@ -45,14 +46,14 @@
                 </div>
             </aside>
 
-            <main class="col-md-9 col-lg-10 p-4">
-                <h1 class="d-flex align-items-center justify-content-center mb-3">Técnicos - Sistema de Manutenção</h1>
+            <main class="col-md-9 col-lg-10 p-4 mb-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Técnicos</h1>
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
                         <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar técnico">
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary w-100">Pesquisar</button>
+                        <button type="button" class="btn btn-primary w-100">Pesquisar</button>
                     </div>
                 </form>
 
@@ -75,12 +76,12 @@
                         <thead>
                             <tr>
                                 <th>Técnico</th>
-                                <th>Cargo</th>
+                                <th>Especialidade</th>
                                 <th>Status</th>
                                 <th>Editar</th>
                             </tr>
                         </thead>
-                        <tbody id="techniciansTable"></tbody>
+                        <tbody id="techniciansTable" class="mb-4"></tbody>
                     </table>
                 </div>
 
@@ -94,8 +95,12 @@
                             <div class="modal-body">
                                 <label for="technicianName">Nome do Técnico *</label>
                                 <input type="text" id="technicianName" class="form-control mb-4" placeholder="Nome do técnico">
-                                <label for="technicianPosition">Cargo *</label>
-                                <input type="text" id="technicianPosition" class="form-control mb-4" placeholder="Cargo do técnico">
+                                <label for="technicianPhone">Telefone *</label>
+                                <input type="tel" id="technicianPhone" class="form-control mb-4" placeholder="Telefone do técnico">
+                                <label for="technicianEmail">E-mail *</label>
+                                <input type="email" id="technicianEmail" class="form-control mb-4" placeholder="E-mail do técnico">
+                                <label for="technicianSpecialty">Especialidade *</label>
+                                <input type="text" id="technicianSpecialty" class="form-control mb-4" placeholder="Especialidade do técnico">
                                 <label for="technicianStatus" class="form-label">Status do Técnico *</label>
                                 <select class="form-select mb-4" id="technicianStatus">
                                     <option value="Ativo">Ativo</option>
@@ -113,7 +118,7 @@
         </div>
     </div>
 
-    <footer class="d-flex align-items-center justify-content-center bg-dark text-white">
+    <footer class="d-flex align-items-center justify-content-center bg-dark text-white mt-3">
         <small>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</small>
     </footer>
 

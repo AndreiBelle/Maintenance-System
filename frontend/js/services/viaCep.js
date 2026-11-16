@@ -13,10 +13,6 @@ const buscarCep = async (cep) => {
 
     const endereco = await response.json();
 
-    if (endereco.erro) {
-        throw new Error("CEP não encontrado.");
-    }
-
     return {
         city: endereco.localidade,
         state: endereco.uf

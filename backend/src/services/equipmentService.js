@@ -16,6 +16,33 @@ const getEquipmentById = async (id) => {
 };
 
 const createEquipment = async (data) => {
+    const { name, patrimony: equipmentPatrimony, local, status, acquisitionDate, categoryId, nextPreventiveDate } = data;
+
+    if (!name || !equipmentPatrimony || !local || !status || !Number(categoryId)) {
+        const error = new Error("Dados marcados com * são obrigatórios!");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const acquisition = acquisitionDate ? new Date(acquisitionDate) : null;
+    const nextPreventive = nextPreventiveDate ? new Date(nextPreventiveDate) : null;
+
+    if (acquisitionDate || nextPreventiveDate) {
+        const error = new Error("Informe datas válidas para o equipamento.");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    data = {
+        name,
+        patrimony: equipmentPatrimony,
+        local,
+        status,
+        acquisitionDate: acquisition,
+        categoryId: Number(categoryId),
+        nextPreventiveDate: nextPreventive
+    };
+
     try {
         const patrimony = await prisma.equipment.findUnique({
             where: {
@@ -39,6 +66,33 @@ const createEquipment = async (data) => {
 };
 
 const update = async (id, data) => {
+    const { name, patrimony, local, status, acquisitionDate, categoryId, nextPreventiveDate } = data;
+
+    if (!name || !patrimony || !local || !status || !Number(categoryId)) {
+        const error = new Error("Dados marcados com * são obrigatórios!");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const acquisition = acquisitionDate ? new Date(acquisitionDate) : null;
+    const nextPreventive = nextPreventiveDate ? new Date(nextPreventiveDate) : null;
+
+    if ((acquisitionDate && Number.isNaN(acquisition.getTime())) || (nextPreventiveDate && Number.isNaN(nextPreventive.getTime()))) {
+        const error = new Error("Informe datas válidas para o equipamento.");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    data = {
+        name,
+        patrimony,
+        local,
+        status,
+        acquisitionDate: acquisition,
+        categoryId: Number(categoryId),
+        nextPreventiveDate: nextPreventive
+    };
+
     try {
         const searchEquipment = await prisma.equipment.findUnique({
             where: { patrimony: data.patrimony }
@@ -67,7 +121,12 @@ const deleteEquipment = async (id) => {
             }
         });
     } catch (err) {
-        throw new Error('Erro ao deletar Equipamento '+err);
+        if (err.code === 'P2003') {
+            const error = new Error('Não é possível excluir um equipamento que possui ordens de serviço.');
+            error.statusCode = 409;
+            throw error;
+        }
+        throw err;
     }
 
 };

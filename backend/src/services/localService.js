@@ -15,6 +15,14 @@ const getLocalById = async (id) => {
 };
 
 const createLocal = async (data) => {
+    const { cep, city, state, nameLocation, sector } = data;
+
+    if (!cep || !city || !state || !nameLocation || !sector) {
+        const error = new Error("Dados marcados com * são obrigatórios!");
+        error.statusCode = 400;
+        throw error;
+    }
+
     return await prisma.local.create({
         data
     });

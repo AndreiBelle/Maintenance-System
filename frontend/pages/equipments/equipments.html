@@ -39,8 +39,9 @@
                     <nav class="nav flex-column">
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../dashboard.html">Dashboard</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Equipamento</a>
-                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../categories/categories.html">Categorias</a>
                         <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../technicians/technicians.html">Tecnicos</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="../work-orders/work-orders.html">Ordens de Serviço</a>
                     </nav>
                     <div class="d-flex mt-auto mt-lg-5">
                         <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
@@ -49,13 +50,13 @@
                 </div>
             </aside>
             <main class="col-md-9 col-lg-10 p-4">
-                <h1 class="d-flex align-items-center justify-content-center mb-3">Equipamentos - Sistema de Manutenção</h1>
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Equipamentos</h1>
                 <form class="row g-3 mb-4">
                     <div class="col-md-8">
                         <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar equipamento">
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary w-100">
+                        <button type="button" class="btn btn-primary w-100">
                             Pesquisar
                         </button>
                     </div>
@@ -131,6 +132,14 @@
                                 class="form-control mb-4"
                                 placeholder="Número do patrimônio do equipamento"
                                 >
+                                <label for="equipmentAcquisitionDate">Data de aquisição</label>
+                                <input type="date" id="equipmentAcquisitionDate" class="form-control mb-4">
+                                <label for="equipmentCategory">Categoria *</label>
+                                <select id="equipmentCategory" class="form-select mb-4" required>
+                                    <option selected disabled value="">Selecione a categoria...</option>
+                                </select>
+                                <label for="nextPreventiveDate">Próxima manutenção preventiva sugerida</label>
+                                <input type="date" id="nextPreventiveDate" class="form-control mb-4" readonly>
                                 <label for="equipamentLocal">Local *</label>
                                 <select id="equipamentLocal" class="form-select mb-4" required>
                                     <option selected disabled value="">Selecione o local...</option>

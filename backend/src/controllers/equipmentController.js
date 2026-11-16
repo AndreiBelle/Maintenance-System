@@ -11,22 +11,8 @@ const getAllEquipments = async (req,res) => {
 };
 
 const createEquipment = async (req,res) => {
-    const {name, patrimony, local, status, acquisitionDate = new Date().toISOString()} = req.body;
-
-    if(!name || !patrimony || !local || !status) {
-        return res.status(400).json({message : "Dados marcados com * são obrigatórios!"});
-    }
-
-    const data = {
-        name: name,
-        patrimony: patrimony,
-        local: local,
-        status: status,
-        acquisitionDate: acquisitionDate,
-    };
-
     try{
-        await equipmentService.createEquipment(data);
+        await equipmentService.createEquipment(req.body);
         return res.status(201).json({message: "Equipamento cadastrado com sucesso!"});
     } catch (err) {
         if (err.statusCode) {
@@ -44,36 +30,35 @@ const createEquipment = async (req,res) => {
 
 const deleteEquipment = async (req, res) => { 
     try {
-        const id = req.params.id
-
-        const equipment = await equipmentService.deleteEquipment(id);
+        await equipmentService.deleteEquipment(req.params.id);
         return res.status(204).send();
     } catch (err) {
-        console.error(err)
+        console.error("Erro ao excluir equipamento: ", err);
+        return res.status(err.statusCode || 500).json({ message: err.message || "Erro ao excluir equipamento." });
     }
 }
 
 const editEquipment = async (req, res) => {
     try {
-        const equipment = await equipmentService.update(req.params.id, req.body);
+        await equipmentService.update(req.params.id, req.body);
         return res.status(204).send();
     } catch (err) {
-        return res.status(400).json({message : `${err}`});
+        return res.status(err.statusCode || 400).json({ message: err.message });
     }
 }
 
 const getEquipmentById = async (req, res) => {
     try {
-        const id = req.params.id
-        const equipment = await equipmentService.getEquipmentById(id);
+        const equipment = await equipmentService.getEquipmentById(req.params.id);
 
         if (!equipment) {
             return res.status(404).json({ message: "Equipamento não encontrado" });
         }
 
-        res.json(equipment);
+        return res.json(equipment);
     } catch (err) {
-        console.error(err)
+        console.error("Erro ao buscar equipamento: ", err);
+        return res.status(500).json({ message: "Erro ao buscar equipamento." });
     }
 }
 module.exports = {

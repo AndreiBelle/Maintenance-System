@@ -5,41 +5,73 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
-  binaryTargets = ["native","windows"]
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Equipment {
-  id Int @unique @default(autoincrement())
-  name String
-  patrimony String @unique
-  local String @default("Não informado")
-  status String
-  acquisitionDate DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 Int         @unique @default(autoincrement())
+  name               String
+  patrimony          String      @unique
+  local              String      @default("Não informado")
+  status             String
+  acquisitionDate    DateTime?
+  nextPreventiveDate DateTime?
+  categoryId         Int?
+  category           Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  workOrders         WorkOrder[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
 }
 
 model Technicians {
-  id Int @unique @default(autoincrement())
-  name String
-  status String
-  position String
+  id         Int         @unique @default(autoincrement())
+  name       String
+  status     String
+  phone      String      @default("")
+  email      String      @default("")
+  specialty  String
+  workOrders WorkOrder[]
+}
+
+model Category {
+  id                    Int         @unique @default(autoincrement())
+  name                  String
+  description           String
+  preventivePeriodicity String
+  equipments            Equipment[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+model WorkOrder {
+  id                   Int         @unique @default(autoincrement())
+  equipmentId          Int
+  technicianId         Int
+  description          String
+  priority             String
+  startDate            DateTime
+  expectedDeliveryDate DateTime
+  status               String
+  equipment            Equipment   @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  technician           Technicians @relation(fields: [technicianId], references: [id], onDelete: Restrict)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
 }
 
 model Local {
-  id Int @unique @default(autoincrement())
-  cep String
-  city String
-  state String
-  cnpj String?
+  id           Int     @unique @default(autoincrement())
+  cep          String
+  city         String
+  state        String
+  cnpj         String?
   nameLocation String
-  sector String
+  sector       String
 }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordens de Serviço - Sistema de Manutenção</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/equipment.css">
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row bg-dark text-white p-3 d-md-none align-items-center">
+            <div class="col-9"><span>Sistema de Manutenção</span></div>
+            <div class="col-3 text-end">
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral">☰ Menu</button>
+            </div>
+        </div>
+        <div class="row">
+            <aside id="menuLateral" class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 offcanvas-md offcanvas-start" tabindex="-1">
+                <div class="offcanvas-header d-md-none">
+                    <h5 class="offcanvas-title text-white">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column mt-3">
+                    <strong id="userInfo" class="text-center"></strong>
+                    <nav class="nav flex-column">
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../dashboard.html">Dashboard</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../equipments/equipments.html">Equipamento</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../categories/categories.html">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../technicians/technicians.html">Técnicos</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Ordens de Serviço</a>
+                    </nav>
+                    <div class="d-flex mt-auto mt-lg-5">
+                        <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
+                    </div>
+                </div>
+            </aside>
+            <main class="col-md-9 col-lg-10 p-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Ordens de Serviço</h1>
+                <form id="searchForm" class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar ordem, equipamento ou técnico">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary w-100">Pesquisar</button>
+                    </div>
+                </form>
+                <div class="row g-4 mb-2">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6>Ordens de Serviço no histórico</h6>
+                                <h2 id="workOrdersTotal"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 d-flex flex-column gap-2 Divbuttons">
+                        <button id="btnNewWorkOrder" type="button" class="buttons">Abrir Ordem de Serviço</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Equipamento</th>
+                                <th>Técnico</th>
+                                <th>Descrição</th>
+                                <th>Prioridade</th>
+                                <th>Início</th>
+                                <th>Previsão</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workOrdersTable"></tbody>
+                    </table>
+                </div>
+                <div class="modal fade" id="workOrderModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="workOrderModalTitle">Abrir Ordem de Serviço</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="workOrderEquipment">Equipamento *</label>
+                                <select id="workOrderEquipment" class="form-select mb-4"></select>
+                                <label for="workOrderTechnician">Técnico *</label>
+                                <select id="workOrderTechnician" class="form-select mb-4"></select>
+                                <label for="workOrderDescription">Descrição *</label>
+                                <textarea id="workOrderDescription" class="form-control mb-4" rows="3" placeholder="Descrição do serviço"></textarea>
+                                <label for="workOrderPriority">Prioridade *</label>
+                                <select id="workOrderPriority" class="form-select mb-4">
+                                    <option value="Baixa">Baixa</option>
+                                    <option value="Média">Média</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="workOrderStartDate">Data de início *</label>
+                                        <input type="date" id="workOrderStartDate" class="form-control mb-4">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="workOrderExpectedDate">Previsão de entrega *</label>
+                                        <input type="date" id="workOrderExpectedDate" class="form-control mb-4">
+                                    </div>
+                                </div>
+                                <label for="workOrderStatus">Status *</label>
+                                <select id="workOrderStatus" class="form-select mb-4">
+                                    <option value="Aberta">Aberta</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                                <div class="d-flex p-2">
+                                    <button type="button" id="btnSaveWorkOrder" class="btn btn-success">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <footer class="d-flex align-items-center justify-content-center bg-dark text-white">
+        <small>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</small>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script type="module" src="../../js/services/configToast.js"></script>
+    <script type="module" src="../../js/services/modalConfig.js"></script>
+    <script type="module" src="../../js/workOrders.js"></script>
+</body>
+</html>

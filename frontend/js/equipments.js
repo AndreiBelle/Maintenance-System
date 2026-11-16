@@ -5,6 +5,7 @@ import { buscarCep } from './services/viaCep.js';
 
 const endPoint = 'http://localhost:3000/equipments';
 const localsEndPoint = 'http://localhost:3000/locals';
+const categoriesEndPoint = 'http://localhost:3000/categories';
 
 const modalEquipment = document.getElementById("equipamentModel");
 const modal = new bootstrap.Modal(modalEquipment);
@@ -28,6 +29,9 @@ const equipamentName = document.getElementById("equipamentName");
 const equipmentPatrimony = document.getElementById("equipmentPatrimony");
 const equipamentLocal = document.getElementById("equipamentLocal");
 const equipamentStatus = document.getElementById("equipamentStatus");
+const equipmentAcquisitionDate = document.getElementById("equipmentAcquisitionDate");
+const equipmentCategory = document.getElementById("equipmentCategory");
+const nextPreventiveDate = document.getElementById("nextPreventiveDate");
 
 const localCep = document.getElementById("localCep");
 const localCity = document.getElementById("localCity");
@@ -40,6 +44,7 @@ const localModalTitle = document.getElementById("localModalTitle");
 const searchInput = document.getElementById('searchInput');
 
 let allEquipments = [];
+let allCategories = [];
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -50,6 +55,7 @@ onAuthStateChanged(auth, async (user) => {
     userInfo.textContent = `Bem vindo! ${user.email}`;
     await loadEquipments();
     await loadLocals();
+    await loadCategories();
 });
 
 logoutButton.addEventListener('click', async () => {
@@ -149,6 +155,66 @@ async function loadLocals() {
 
         showNotify(err.message || "Não foi possível carregar os locais.", "danger");
     }
+}
+
+async function loadCategories() {
+    try {
+        const idToken = await verifyTokenAndUser();
+        const response = await fetch(categoriesEndPoint, {
+            headers: { Authorization: `Bearer ${idToken}` }
+        });
+
+        if (!response.ok) {
+            throw new Error("Falha ao carregar categorias.");
+        }
+
+        allCategories = await response.json();
+        const selectedCategory = equipmentCategory.value;
+        equipmentCategory.innerHTML = '<option selected disabled value="">Selecione a categoria...</option>';
+
+        allCategories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.textContent = category.name;
+            equipmentCategory.appendChild(option);
+        });
+
+        if (allCategories.some(category => String(category.id) === selectedCategory)) {
+            equipmentCategory.value = selectedCategory;
+        }
+    } catch (err) {
+        console.error("Erro ao carregar categorias: ", err);
+        showNotify(err.message || "Não foi possível carregar as categorias.", "danger");
+    }
+}
+
+function updateNextPreventiveDate() {
+    const category = allCategories.find(item => String(item.id) === equipmentCategory.value);
+    if (!category) {
+        nextPreventiveDate.value = "";
+        return;
+    }
+
+    const days = Number(category.preventivePeriodicity);
+    if (!Number.isSafeInteger(days) || days < 1) {
+        nextPreventiveDate.value = "";
+        return;
+    }
+
+    const baseDate = equipmentAcquisitionDate.value
+        ? new Date(`${equipmentAcquisitionDate.value}T00:00:00`)
+        : new Date();
+    baseDate.setDate(baseDate.getDate() + days);
+
+    if (Number.isNaN(baseDate.getTime())) {
+        nextPreventiveDate.value = "";
+        return;
+    }
+
+    const year = baseDate.getFullYear();
+    const month = String(baseDate.getMonth() + 1).padStart(2, '0');
+    const day = String(baseDate.getDate()).padStart(2, '0');
+    nextPreventiveDate.value = `${year}-${month}-${day}`;
 }
 
 async function saveLocal(local) {
@@ -270,12 +336,12 @@ async function editEquipment(id, equipment) {
 
 async function equipamentDelete(id) {
     if (!id) {
-        console.error("ID não encontrado");
+        showNotify("ID do equipamento não encontrado.", "danger");
+        return false;
     }
 
-    const idToken = await verifyTokenAndUser();
-    
     try {
+        const idToken = await verifyTokenAndUser();
         const data = await fetch(`${endPoint}/${id}`, {
             method: 'DELETE',
             headers: {
@@ -283,13 +349,18 @@ async function equipamentDelete(id) {
             }
         });
 
-        if(!data.ok) {
-            showNotify("Equipamento apagado com sucesso!", "success");
+        if (!data.ok) {
+            const result = await data.json();
+            throw new Error(result.message || "Erro ao excluir equipamento.");
         }
 
         await loadEquipments();
+        showNotify("Equipamento apagado com sucesso!", "success");
+        return true;
     } catch (err) {
-        console.error("Ocorreu um erro ao excluir o equipamento: " + err)
+        console.error("Ocorreu um erro ao excluir o equipamento: ", err);
+        showNotify(err.message || "Não foi possível excluir o equipamento.", "danger");
+        return false;
     }
 }
 
@@ -332,6 +403,9 @@ btnNewEquipament.addEventListener("click", async () => {
     equipmentPatrimony.value = "";
     equipamentLocal.value = "";
     equipamentStatus.value = "Ativo";
+    equipmentAcquisitionDate.value = "";
+    equipmentCategory.value = "";
+    nextPreventiveDate.value = "";
 
     modal.show();
 })
@@ -437,9 +511,9 @@ equipamentsTable.addEventListener('click', async (event) => {
                 'Excluir Equipamento', 
                 'Tem certeza que deseja apagar este item permanentemente?', 
                 async () => {
-                    await equipamentDelete(equipmentId);
-                    modal.hide();
-                    showNotify("Equipamento apagado com sucesso","success");
+                    if (await equipamentDelete(equipmentId)) {
+                        modal.hide();
+                    }
                 }
             );
         });
@@ -461,6 +535,13 @@ equipamentsTable.addEventListener('click', async (event) => {
             equipmentPatrimony.value = equipment.patrimony;
             equipamentLocal.value = equipment.local;
             equipamentStatus.value = equipment.status;
+            equipmentAcquisitionDate.value = equipment.acquisitionDate
+                ? equipment.acquisitionDate.slice(0, 10)
+                : "";
+            equipmentCategory.value = equipment.categoryId || "";
+            nextPreventiveDate.value = equipment.nextPreventiveDate
+                ? equipment.nextPreventiveDate.slice(0, 10)
+                : "";
 
             btnSave.textContent = "Editar";
             btnSave.dataset.id = equipment.id;
@@ -487,11 +568,18 @@ modalEquipment.addEventListener("click", async (event) => {
         name: equipamentName.value,
         patrimony: equipmentPatrimony.value,
         local: equipamentLocal.value,
-        status: equipamentStatus.value
+        status: equipamentStatus.value,
+        acquisitionDate: equipmentAcquisitionDate.value
+            ? new Date(`${equipmentAcquisitionDate.value}T00:00:00`).toISOString()
+            : null,
+        categoryId: Number(equipmentCategory.value),
+        nextPreventiveDate: nextPreventiveDate.value
+            ? new Date(`${nextPreventiveDate.value}T00:00:00`).toISOString()
+            : null
     };
 
-    if (!equipment.local) {
-        showNotify("Selecione um local cadastrado.", "danger");
+    if (!equipment.local || !equipment.categoryId) {
+        showNotify("Selecione um local e uma categoria cadastrados.", "danger");
         return;
     }
 
@@ -519,6 +607,9 @@ modalEquipment.addEventListener("click", async (event) => {
         }
     }
 });
+
+equipmentCategory.addEventListener('change', updateNextPreventiveDate);
+equipmentAcquisitionDate.addEventListener('input', updateNextPreventiveDate);
 
 searchInput.addEventListener("input", () => {
     const term = searchInput.value.toLowerCase();

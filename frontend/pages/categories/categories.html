@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias - Sistema de Manutenção</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/equipment.css">
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row bg-dark text-white p-3 d-md-none align-items-center">
+            <div class="col-9"><span>Sistema de Manutenção</span></div>
+            <div class="col-3 text-end">
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral">☰ Menu</button>
+            </div>
+        </div>
+        <div class="row">
+            <aside id="menuLateral" class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 offcanvas-md offcanvas-start" tabindex="-1">
+                <div class="offcanvas-header d-md-none">
+                    <h5 class="offcanvas-title text-white">Menu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column mt-3">
+                    <strong id="userInfo" class="text-center"></strong>
+                    <nav class="nav flex-column">
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../dashboard.html">Dashboard</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../equipments/equipments.html">Equipamento</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none active btn btn-link" href="#">Categorias</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../technicians/technicians.html">Técnicos</a>
+                        <a class="btn btn-outline-black text-white mt-2 text-decoration-none btn btn-link" href="../work-orders/work-orders.html">Ordens de Serviço</a>
+                    </nav>
+                    <div class="d-flex mt-auto mt-lg-5">
+                        <button id="logoutButton" type="button" class="w-100 btn btn-outline-danger">Sair</button>
+                    </div>
+                </div>
+            </aside>
+            <main class="col-md-9 col-lg-10 p-4">
+                <h1 class="d-flex align-items-center justify-content-center mb-3">Categorias</h1>
+                <form class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <input id="searchInput" type="text" class="form-control" placeholder="Pesquisar categoria">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary w-100">Pesquisar</button>
+                    </div>
+                </form>
+                <div class="row g-4 mb-2">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6>Categorias cadastradas</h6>
+                                <h2 id="categoriesTotal"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 d-flex flex-column gap-2 Divbuttons">
+                        <button id="btnNewCategory" type="button" class="buttons">Nova Categoria</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Descrição</th>
+                                <th>Periodicidade Padrão</th>
+                                <th>Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTable"></tbody>
+                    </table>
+                </div>
+                <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="categoryModalTitle">Nova Categoria</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="categoryName">Nome da Categoria *</label>
+                                <input type="text" id="categoryName" class="form-control mb-4" placeholder="Nome da categoria">
+                                <label for="categoryDescription">Descrição *</label>
+                                <textarea id="categoryDescription" class="form-control mb-4" rows="3" placeholder="Descrição da categoria"></textarea>
+                                <label for="categoryPeriodicity">Periodicidade Padrão de Preventiva (em dias) *</label>
+                                <div class="input-group mb-2">
+                                    <input type="number" id="categoryPeriodicity" class="form-control" min="1" step="1" placeholder="180">
+                                    <span class="input-group-text">dias</span>
+                                </div>
+                                <small class="text-muted d-block mb-4">Exemplo: 180 dias (a cada 6 meses).</small>
+                                <div class="d-flex p-2">
+                                    <button type="button" id="btnSaveCategory" class="btn btn-success">Salvar</button>
+                                    <button type="button" id="btnDeleteCategory" class="ms-auto d-none btn btn-outline-danger">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <footer class="d-flex align-items-center justify-content-center bg-dark text-white">
+        <small>2026 Sistema de Controle e Manutenção de Equipamentos ADS2026-2</small>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script type="module" src="../../js/services/configToast.js"></script>
+    <script type="module" src="../../js/services/modalConfig.js"></script>
+    <script type="module" src="../../js/categories.js"></script>
+</body>
+</html>

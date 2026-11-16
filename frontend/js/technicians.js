@@ -13,7 +13,9 @@ const btnSaveTechnician = document.querySelector('#btnSaveTechnician');
 const btnDeleteTechnician = document.querySelector('#btnDeleteTechnician');
 
 const technicianName = document.querySelector('#technicianName');
-const technicianPosition = document.querySelector('#technicianPosition');
+const technicianPhone = document.querySelector('#technicianPhone');
+const technicianEmail = document.querySelector('#technicianEmail');
+const technicianSpecialty = document.querySelector('#technicianSpecialty');
 const technicianStatus = document.querySelector('#technicianStatus');
 
 const techniciansTable = document.querySelector('#techniciansTable');
@@ -70,37 +72,27 @@ async function loadTechnicians() {
 }
 
 function renderTechnicians(technicians) {
-    techniciansTable.replaceChildren();
 
-    if (technicians.length === 0) {
-        techniciansTable.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum técnico encontrado.</td></tr>`;
-        activeTechniciansTotal.textContent = 0;
-        return;
+    if(technicians.length > 0)  {
+        technicians.forEach(technician => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `<td>${technician.name}</td>
+            <td>${technician.specialty}</td>
+            <td>${technician.status}</td>
+            <td> <button class="btn btn-info btnEdit" data-id="${technician.id}">Editar</button>
+            </td>  
+            `
+            techniciansTable.appendChild(row);
+        });
+    } else {
+        techniciansTable.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum equipamento encontrado.</td></tr>`;
     }
-
-    technicians.forEach((technician) => {
-        const row = document.createElement('tr');
-        const nameCell = document.createElement('td');
-        const positionCell = document.createElement('td');
-        const statusCell = document.createElement('td');
-        const actionCell = document.createElement('td');
-        const editButton = document.createElement('button');
-
-        nameCell.textContent = technician.name;
-        positionCell.textContent = technician.position;
-        statusCell.textContent = technician.status;
-        editButton.type = 'button';
-        editButton.className = 'btn btn-info btnEdit';
-        editButton.dataset.id = technician.id;
-        editButton.textContent = 'Editar';
-        actionCell.appendChild(editButton);
-        row.append(nameCell, positionCell, statusCell, actionCell);
-        techniciansTable.appendChild(row);
-    });
 
     activeTechniciansTotal.textContent = allTechnicians.filter(
         (technician) => technician.status === 'Ativo'
     ).length;
+
 }
 
 async function getTechnicianById(id) {
@@ -169,7 +161,9 @@ async function deleteTechnician(id) {
 
 btnNewTechnician.addEventListener('click', () => {
     technicianName.value = '';
-    technicianPosition.value = '';
+    technicianPhone.value = '';
+    technicianEmail.value = '';
+    technicianSpecialty.value = '';
     technicianStatus.value = 'Ativo';
     btnSaveTechnician.textContent = 'Salvar';
     delete btnSaveTechnician.dataset.id;
@@ -187,7 +181,9 @@ techniciansTable.addEventListener('click', async (event) => {
     try {
         const technician = await getTechnicianById(editButton.dataset.id);
         technicianName.value = technician.name;
-        technicianPosition.value = technician.position;
+        technicianPhone.value = technician.phone;
+        technicianEmail.value = technician.email;
+        technicianSpecialty.value = technician.specialty;
         technicianStatus.value = technician.status;
         btnSaveTechnician.textContent = 'Editar';
         btnSaveTechnician.dataset.id = technician.id;
@@ -203,12 +199,19 @@ techniciansTable.addEventListener('click', async (event) => {
 btnSaveTechnician.addEventListener('click', async () => {
     const technician = {
         name: technicianName.value.trim(),
-        position: technicianPosition.value.trim(),
+        phone: technicianPhone.value.trim(),
+        email: technicianEmail.value.trim(),
+        specialty: technicianSpecialty.value.trim(),
         status: technicianStatus.value
     };
 
-    if (!technician.name || !technician.position || !technician.status) {
+    if (!technician.name || !technician.phone || !technician.email || !technician.specialty || !technician.status) {
         window.showNotify('Preencha todos os campos obrigatórios.', 'danger');
+        return;
+    }
+
+    if (!technicianEmail.checkValidity()) {
+        window.showNotify('Informe um e-mail válido.', 'danger');
         return;
     }
 
@@ -250,9 +253,10 @@ btnDeleteTechnician.addEventListener('click', () => {
 searchInput.addEventListener("input", () => {
     const term = searchInput.value.toLowerCase();
 
-    const result = allTechnicians.filter(technician => 
+    const result = allTechnicians.filter(technician =>
         technician.name.toLowerCase().includes(term) ||
-        technician.position.toLowerCase().includes(term)
+        technician.email.toLowerCase().includes(term) ||
+        technician.specialty.toLowerCase().includes(term)
     );
     
     renderTechnicians(result);

@@ -11,25 +11,13 @@ const getAllLocals = async (req, res) => {
 };
 
 const createLocal = async (req, res) => {
-    const { cep, city, state, cnpj, nameLocation, sector } = req.body;
-
-    if (!cep || !city || !state || !nameLocation || !sector) {
-        return res.status(400).json({ message: "Dados marcados com * são obrigatórios!" });
-    }
-
-    const data = {
-        cep,
-        city,
-        state,
-        cnpj,
-        nameLocation,
-        sector
-    };
-
     try {
-        await localService.createLocal(data);
+        await localService.createLocal(req.body);
         return res.status(201).json({ message: "Local cadastrado com sucesso!" });
     } catch (err) {
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ message: err.message });
+        }
         return res.status(500).json({ message: "Erro ao processar os dados, por favor tente novamente mais tarde." + err });
     }
 };
