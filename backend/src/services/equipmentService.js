@@ -27,7 +27,7 @@ const createEquipment = async (data) => {
     const acquisition = acquisitionDate ? new Date(acquisitionDate) : null;
     const nextPreventive = nextPreventiveDate ? new Date(nextPreventiveDate) : null;
 
-    if (acquisitionDate || nextPreventiveDate) {
+    if (!acquisitionDate || !nextPreventiveDate) {
         const error = new Error("Informe datas válidas para o equipamento.");
         error.statusCode = 400;
         throw error;
