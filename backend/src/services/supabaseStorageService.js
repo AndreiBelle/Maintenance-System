@@ -1,5 +1,4 @@
 const { createClient } = require("@supabase/supabase-js");
-const { prisma } = require("../database/prisma");
 
 const supabase = createClient(
     process.env.SUPABASE_URL,

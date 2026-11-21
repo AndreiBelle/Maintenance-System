@@ -619,6 +619,18 @@ equipamentsTable.addEventListener('click', async (event) => {
             equipmentCategory.value = equipment.categoryId || "";
             nextPreventiveDate.value = equipment.nextPreventiveDate ? equipment.nextPreventiveDate.slice(0, 10) : "";
 
+            const imageModal = document.createElement("div");
+
+            if(equipment.imageUrl && equipment.imageUrl.length > 0) {
+                equipment.imageUrl.forEach(img => {
+                    imageModal.innerHTML = `<img src="${img}" alt="Imagem do equipamento ${equipment.name}"></img>`
+
+                    modalEquipment.appendChild(imageModal);
+                })
+            } else {
+                imageModal.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum local encontrado.</td></tr>`;
+            }
+
             btnSave.textContent = "Editar";
             btnSave.dataset.id = equipment.id;
             modalTitle.textContent = "Editar Equipamento";

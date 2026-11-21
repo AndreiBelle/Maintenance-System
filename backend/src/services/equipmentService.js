@@ -1,5 +1,5 @@
 const prisma = require('../database/prisma');
-const uploadEquipmentImage = require("./supabaseStorageService");
+const {uploadEquipmentImage} = require("./supabaseStorageService");
 
 
 const getAllEquipments = async () => {
