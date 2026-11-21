@@ -23,12 +23,6 @@ const createTechnician = async (data) => {
         throw error;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        const error = new Error("Informe um e-mail válido.");
-        error.statusCode = 400;
-        throw error;
-    }
-
     if (!validStatuses.includes(status)) {
         const error = new Error("O status deve ser Ativo ou Inativado.");
         error.statusCode = 400;

@@ -8,7 +8,7 @@ const localsEndPoint = 'http://localhost:3000/locals';
 const categoriesEndPoint = 'http://localhost:3000/categories';
 
 const modalEquipment = document.getElementById("equipamentModel");
-const modal = new bootstrap.Modal(modalEquipment);
+const modal = new bootstrap.Modal(modalEquipment, {focus: false});
 const modalTitle = document.querySelector("#modal-title");
 
 const modalLocalElement = document.getElementById("localModal");
@@ -19,11 +19,13 @@ const btnNewLocal = document.getElementById("btnNewLocal");
 const btnSave = document.getElementById("btnSaveEquipament");
 const btnSaveLocal = document.getElementById("btnSaveLocal");
 const btnDeleteEquipament = document.getElementById("btnDeleteEquipament");
+const btnDeleteLocal = document.getElementById("btnDeleteLocal");
 const logoutButton = document.querySelector("#logoutButton");
 
 const equipamentsTable = document.querySelector("#equipmentsTable");
 const userInfo = document.querySelector("#userInfo");
 const activesTotal = document.querySelector("#activesTotal");
+
 
 const equipamentName = document.getElementById("equipamentName");
 const equipmentPatrimony = document.getElementById("equipmentPatrimony");
@@ -32,6 +34,9 @@ const equipamentStatus = document.getElementById("equipamentStatus");
 const equipmentAcquisitionDate = document.getElementById("equipmentAcquisitionDate");
 const equipmentCategory = document.getElementById("equipmentCategory");
 const nextPreventiveDate = document.getElementById("nextPreventiveDate");
+
+
+const localTable = document.getElementById('localTable');
 
 const localCep = document.getElementById("localCep");
 const localCity = document.getElementById("localCity");
@@ -42,9 +47,11 @@ const localSector = document.getElementById("localSector");
 const localModalTitle = document.getElementById("localModalTitle");
 
 const searchInput = document.getElementById('searchInput');
+const searchLocals = document.getElementById('searchLocals');
 
 let allEquipments = [];
 let allCategories = [];
+let allLocals = [];
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -90,6 +97,7 @@ async function loadEquipments() {
         allEquipments = await response.json();
 
         equipamentsTableRender(allEquipments);
+        localtabelRender(allLocals)
         dashboardRefresh(allEquipments);
 
     } catch (err) {
@@ -97,11 +105,11 @@ async function loadEquipments() {
     }
 }
 
-async function saveEquipments(equipment) {
+async function saveEquipments() {
     try {
-        if (!equipment) {
-            throw new Error("Equipamento não informado.");
-        }
+        
+        const equipmentForm = document.getElementById("equipmentForm");
+        const formData = new FormData(equipmentForm);
 
         const idToken = await verifyTokenAndUser();
 
@@ -109,9 +117,8 @@ async function saveEquipments(equipment) {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${idToken}`,
-                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(equipment)
+            body: formData
         });
 
         const retorno = await data.json();
@@ -122,11 +129,12 @@ async function saveEquipments(equipment) {
         }
 
         await loadEquipments();
-        return retorno;
-        
+        showNotify("Equipamento cadastrado com sucesso", "success");
+        modal.hide();
 
     } catch (err) {
         console.error("Occoreu um erro interno, por favor tente novamente mais tarde: " + err)
+        showNotify("Ocorreu um erro interno ao salvar o equipamento.", "danger");
     }
 }
 
@@ -148,8 +156,9 @@ async function loadLocals() {
             throw new Error("Falha ao carregar locais.");
         }
 
-        const locals = await response.json();
-        localSelectRender(locals);
+        allLocals = await response.json();
+        localtabelRender(allLocals);
+        localSelectRender(allLocals)
     } catch (err) {
         console.error("Erro ao carregar locais: ", err);
 
@@ -374,6 +383,7 @@ function equipamentsTableRender(equipmentsList) {
             const row = document.createElement("tr");
 
             row.innerHTML = `<td>${equipment.name}</td>
+            <td>${equipment.patrimony}</td>
             <td>${equipment.local}</td>
             <td>${status}</td>
             <td> <button class="btn btn-info btnEdit" data-id="${equipment.id}">Editar</button>
@@ -386,6 +396,26 @@ function equipamentsTableRender(equipmentsList) {
     }
 
     dashboardRefresh(allEquipments);
+}
+
+function localtabelRender(localsList) {
+    localTable.innerHTML = "";
+
+    if(localsList.length > 0)  {
+        localsList.forEach(locals => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `<td>${locals.nameLocation}</td>
+            <td>${locals.city} - ${locals.state}</td>
+            <td>${locals.sector}</td>
+            <td> <button class="btn btn-info btnEdit" data-id="${locals.id}">Editar</button>
+            </td>  
+            `
+            localTable.appendChild(row);
+        });
+    } else {
+        localTable.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum local encontrado.</td></tr>`;
+    }
 }
 
 function dashboardRefresh(equipmentsList) {
@@ -418,6 +448,7 @@ btnNewLocal.addEventListener("click", () => {
     localNameLocation.value = "";
     localSector.value = "";
     delete btnSaveLocal.dataset.id;
+    btnDeleteLocal.classList.add('d-none');
     btnSaveLocal.textContent = "Salvar Local";
     localModalTitle.textContent = "Novo Local";
     modalLocal.show();
@@ -499,6 +530,55 @@ btnSaveLocal.addEventListener("click", async (event) => {
     }
 });
 
+localTable.addEventListener('click', async (event) => {
+    const btnTarget = event.target.closest('.btnEdit');
+    if (!btnTarget) {
+        return;
+    }
+
+    try {
+        const local = await getLocalById(btnTarget.dataset.id);
+        localCep.value = local.cep || "";
+        localCity.value = local.city || "";
+        localEstado.value = local.state || "";
+        localCnpj.value = local.cnpj || "";
+        localNameLocation.value = local.nameLocation || "";
+        localSector.value = local.sector || "";
+
+        btnSaveLocal.dataset.id = local.id;
+        btnSaveLocal.textContent = "Editar Local";
+        btnDeleteLocal.classList.remove('d-none');
+        localModalTitle.textContent = "Editar Local";
+        modalLocal.show();
+    } catch (err) {
+        showNotify(err.message || "Não foi possível carregar os dados do local.", "danger");
+    }
+});
+
+btnDeleteLocal.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const localId = btnSaveLocal.dataset.id;
+    if (!localId) {
+        showNotify("ID do local não encontrado.", "danger");
+        return;
+    }
+
+    showConfirm(
+        'Excluir Local',
+        'Tem certeza que deseja apagar este item permanentemente?',
+        async () => {
+            try {
+                await deleteLocal(localId);
+                modalLocal.hide();
+                await loadLocals();
+            } catch (err) {
+                showNotify(err.message || "Não foi possível excluir o local.", "danger");
+            }
+        }
+    );
+});
+
 equipamentsTable.addEventListener('click', async (event) => {
     if (event.target.classList.contains('btnEdit')) {
         const equipmentId = Number(event.target.dataset.id);
@@ -535,13 +615,9 @@ equipamentsTable.addEventListener('click', async (event) => {
             equipmentPatrimony.value = equipment.patrimony;
             equipamentLocal.value = equipment.local;
             equipamentStatus.value = equipment.status;
-            equipmentAcquisitionDate.value = equipment.acquisitionDate
-                ? equipment.acquisitionDate.slice(0, 10)
-                : "";
+            equipmentAcquisitionDate.value = equipment.acquisitionDate ? equipment.acquisitionDate.slice(0, 10) : "";
             equipmentCategory.value = equipment.categoryId || "";
-            nextPreventiveDate.value = equipment.nextPreventiveDate
-                ? equipment.nextPreventiveDate.slice(0, 10)
-                : "";
+            nextPreventiveDate.value = equipment.nextPreventiveDate ? equipment.nextPreventiveDate.slice(0, 10) : "";
 
             btnSave.textContent = "Editar";
             btnSave.dataset.id = equipment.id;
@@ -556,8 +632,6 @@ equipamentsTable.addEventListener('click', async (event) => {
 
 
 modalEquipment.addEventListener("click", async (event) => {
-    event.preventDefault();
-
     const btnTarget = event.target.closest("button");
 
     if(!btnTarget) {
@@ -584,6 +658,7 @@ modalEquipment.addEventListener("click", async (event) => {
     }
 
     if (event.target.textContent.includes('Editar')) {
+        event.preventDefault();
         const equipmentId = event.target.dataset.id;
 
         try {
@@ -599,8 +674,9 @@ modalEquipment.addEventListener("click", async (event) => {
     }
 
     if (event.target.textContent.includes('Salvar')) {
+        event.preventDefault();
         try {
-            await saveEquipments(equipment);
+            await saveEquipments();
             await loadEquipments();
         } catch (err) {
             showNotify(err);
@@ -619,4 +695,14 @@ searchInput.addEventListener("input", () => {
     );
     
     equipamentsTableRender(result);
+});
+
+searchLocals.addEventListener("input", () => {
+    const term = searchLocals.value.toLowerCase();
+
+    const result = allLocals.filter(locals => 
+        locals.nameLocation.toLowerCase().includes(term)
+    );
+    
+    localtabelRender(result);
 });

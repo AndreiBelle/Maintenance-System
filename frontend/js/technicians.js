@@ -75,6 +75,8 @@ function renderTechnicians(technicians) {
 
     if(technicians.length > 0)  {
         technicians.forEach(technician => {
+            techniciansTable.innerHTML = "";
+
             const row = document.createElement("tr");
 
             row.innerHTML = `<td>${technician.name}</td>

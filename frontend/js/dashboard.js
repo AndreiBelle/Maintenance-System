@@ -65,10 +65,10 @@ async function loadAndInitializeData() {
 }
 
 function dashboardRefresh(data) {
-    activeTotal.textContent = data.filter(eq => eq.status !== "Inactive").length;
-    inactiveTotal.textContent = data.filter(eq => eq.status === "Inactive").length;
-    preventiveTotal.textContent = data.filter(eq => eq.status === "Preventive").length;
-    corretiveTotal.textContent = data.filter(eq => eq.status === "Corrective").length;
+    activeTotal.textContent = data.filter(eq => eq.status !== "Inativo").length;
+    inactiveTotal.textContent = data.filter(eq => eq.status === "Inativo").length;
+    preventiveTotal.textContent = data.filter(eq => eq.status === "Preventiva").length;
+    corretiveTotal.textContent = data.filter(eq => eq.status === "Corretiva").length;
 }
 
 function equipamentsTableRender(data) {

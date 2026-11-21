@@ -22,6 +22,7 @@ model Equipment {
   patrimony          String      @unique
   local              String      @default("Não informado")
   status             String
+  imageUrl           String?
   acquisitionDate    DateTime?
   nextPreventiveDate DateTime?
   categoryId         Int?

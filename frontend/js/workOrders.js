@@ -78,6 +78,9 @@ async function loadEquipments() {
             option.textContent = `${equipment.name} - ${equipment.patrimony}`;
             workOrderEquipment.appendChild(option);
         });
+
+        const date = new Date()
+        console.log(date);
     } catch (err) {
         console.error("Erro ao carregar equipamentos: ", err);
         showNotify(err.message || "Não foi possível carregar os equipamentos.", "danger");
@@ -217,7 +220,7 @@ async function getWorkOrderById(id) {
     return await response.json();
 }
 
-function formatDate(value) {
+function formatDateBr(value) {
     if (!value) {
         return "";
     }
@@ -226,15 +229,11 @@ function formatDate(value) {
     return `${day}/${month}/${year}`;
 }
 
-function dateInputValue(value) {
-    return value ? value.slice(0, 10) : "";
-}
+function formatDateEn() {
+    const date = new Date().toISOString();
 
-function todayInputValue() {
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${today.getFullYear()}-${month}-${day}`;
+    const [year, month, day] = date.slice(0, 10).split("-");
+    return `${year}-${month}-${day}`;
 }
 
 function workOrdersTableRender(workOrdersList) {
@@ -250,8 +249,8 @@ function workOrdersTableRender(workOrdersList) {
                 <td>${technicianName}</td>
                 <td>${workOrder.description}</td>
                 <td>${workOrder.priority}</td>
-                <td>${formatDate(workOrder.startDate)}</td>
-                <td>${formatDate(workOrder.expectedDeliveryDate)}</td>
+                <td>${formatDateBr(workOrder.startDate)}</td>
+                <td>${formatDateBr(workOrder.expectedDeliveryDate)}</td>
                 <td>${workOrder.status}</td>
                 <td>
                     <button class="btn btn-info btn-sm btnEdit" data-id="${workOrder.id}">Editar</button>
@@ -281,7 +280,7 @@ btnNewWorkOrder.addEventListener("click", () => {
     workOrderTechnician.value = "";
     workOrderDescription.value = "";
     workOrderPriority.value = "Baixa";
-    workOrderStartDate.value = todayInputValue();
+    workOrderStartDate.value = formatDateEn();
     workOrderExpectedDate.value = "";
     workOrderStatus.value = "Aberta";
     workOrderModal.show();
@@ -291,16 +290,31 @@ workOrdersTable.addEventListener("click", async (event) => {
     if (event.target.classList.contains("btnEdit")) {
         try {
             const workOrder = await getWorkOrderById(event.target.dataset.id);
+
             workOrderEquipment.value = workOrder.equipmentId;
             workOrderTechnician.value = workOrder.technicianId;
             workOrderDescription.value = workOrder.description;
             workOrderPriority.value = workOrder.priority;
-            workOrderStartDate.value = dateInputValue(workOrder.startDate);
-            workOrderExpectedDate.value = dateInputValue(workOrder.expectedDeliveryDate);
+            workOrderStartDate.value = workOrder.startDate ? workOrder.startDate.slice(0, 10) : "";
+            workOrderExpectedDate.value = workOrder.startDate ? workOrder.expectedDeliveryDate.slice(0, 10) : "";
             workOrderStatus.value = workOrder.status;
             btnSaveWorkOrder.textContent = "Editar";
             btnSaveWorkOrder.dataset.id = workOrder.id;
             workOrderModalTitle.textContent = "Editar Ordem de Serviço";
+
+            const isCompleted = workOrder.status === "Concluída";
+
+            const inputWork = [
+                workOrderEquipment,
+                workOrderTechnician,
+                workOrderDescription,
+                workOrderPriority,
+                workOrderStartDate,
+                workOrderExpectedDate,
+            ];
+
+            inputWork.forEach(input => input.disabled = isCompleted);
+
             workOrderModal.show();
         } catch (err) {
             console.error("Erro ao carregar ordem de serviço: ", err);
@@ -341,12 +355,8 @@ workOrderModalElement.addEventListener("click", async (event) => {
         technicianId: Number(workOrderTechnician.value),
         description: workOrderDescription.value.trim(),
         priority: workOrderPriority.value,
-        startDate: workOrderStartDate.value
-            ? new Date(`${workOrderStartDate.value}T00:00:00`).toISOString()
-            : "",
-        expectedDeliveryDate: workOrderExpectedDate.value
-            ? new Date(`${workOrderExpectedDate.value}T00:00:00`).toISOString()
-            : "",
+        startDate: workOrderStartDate.value ? workOrderStartDate.value : "",
+        expectedDeliveryDate: workOrderExpectedDate.value ? workOrderExpectedDate.value : "",
         status: workOrderStatus.value
     };
 

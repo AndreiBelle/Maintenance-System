@@ -11,18 +11,14 @@ const getAllEquipments = async (req,res) => {
 };
 
 const createEquipment = async (req,res) => {
-    try{
-        await equipmentService.createEquipment(req.body);
-        return res.status(201).json({message: "Equipamento cadastrado com sucesso!"});
-    } catch (err) {
-        if (err.statusCode) {
-            return res.status(err.statusCode).json({
-                message: err.message
-            });
-        }
+   try {
+        const equipment = await equipmentService.createEquipment(req.body, req.file);
 
+        return res.status(201).json(equipment);
+    } catch (err) {
+        console.error("Erro no createEquipmentController:", err);
         return res.status(500).json({
-            message: "Erro ao processar os dados, por favor tente novamente mais tarde."
+            message: err.message || "Erro ao cadastrar equipamento."
         });
     }
 

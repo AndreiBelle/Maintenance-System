@@ -1,4 +1,5 @@
 const prisma = require('../database/prisma');
+const uploadEquipmentImage = require("./supabaseStorageService");
 
 
 const getAllEquipments = async () => {
@@ -15,55 +16,76 @@ const getEquipmentById = async (id) => {
     });
 };
 
-const createEquipment = async (data) => {
-    const { name, patrimony: equipmentPatrimony, local, status, acquisitionDate, categoryId, nextPreventiveDate } = data;
+const createEquipment = async (payload, file) => {
+    const imageUrl = await uploadEquipmentImage(file);
 
-    if (!name || !equipmentPatrimony || !local || !status || !Number(categoryId)) {
-        const error = new Error("Dados marcados com * são obrigatórios!");
-        error.statusCode = 400;
-        throw error;
-    }
+    const categoryId = Number(payload.categoryId);
+    const acquisitionDate = payload.acquisitionDate? new Date(`${payload.acquisitionDate}T00:00:00`) : null;
+    const nextPreventiveDate = payload.nextPreventiveDate ? new Date(`${payload.nextPreventiveDate}T00:00:00`) : null;
 
-    const acquisition = acquisitionDate ? new Date(acquisitionDate) : null;
-    const nextPreventive = nextPreventiveDate ? new Date(nextPreventiveDate) : null;
-
-    if (!acquisitionDate || !nextPreventiveDate) {
-        const error = new Error("Informe datas válidas para o equipamento.");
-        error.statusCode = 400;
-        throw error;
-    }
-
-    data = {
-        name,
-        patrimony: equipmentPatrimony,
-        local,
-        status,
-        acquisitionDate: acquisition,
-        categoryId: Number(categoryId),
-        nextPreventiveDate: nextPreventive
-    };
-
-    try {
-        const patrimony = await prisma.equipment.findUnique({
-            where: {
-                patrimony: data.patrimony
-            }
-        })
-
-        if (patrimony) {
-            const error = new Error("Esse patrimônio já tem cadastro, verifique no sistema!");
-            error.statusCode = 409;
-            throw error;
+    return await prisma.equipment.create({
+        data: {
+            name: payload.name?.trim(),
+            patrimony: payload.patrimony?.trim(),
+            local: payload.local,
+            status: payload.status || "Ativo",
+            categoryId: Number.isNaN(categoryId) ? null : categoryId,
+            acquisitionDate,
+            nextPreventiveDate,
+            imageUrl
         }
-
-        return await prisma.equipment.create({
-            data
-        });
-    } catch (err) {
-        console.error("Erro ao criar:", err.message);
-        throw err;
-    }
+    });
 };
+
+// const createEquipment = async (data) => {
+//     const { name, patrimony: equipmentPatrimony, local, status, acquisitionDate, categoryId, nextPreventiveDate } = data;
+
+//     if (!name || !equipmentPatrimony || !local || !status || !Number(categoryId)) {
+//         const error = new Error("Dados marcados com * são obrigatórios!");
+//         error.statusCode = 400;
+//         throw error;
+//     }
+
+//     const acquisition = acquisitionDate ? new Date(acquisitionDate) : null;
+//     const nextPreventive = nextPreventiveDate ? new Date(nextPreventiveDate) : null;
+
+//     if (!acquisitionDate || !nextPreventiveDate) {
+//         const error = new Error("Informe datas válidas para o equipamento.");
+//         error.statusCode = 400;
+//         throw error;
+//     }
+
+//     data = {
+//         name,
+//         patrimony: equipmentPatrimony,
+//         local,
+//         status,
+//         acquisitionDate: acquisition,
+//         categoryId: Number(categoryId),
+//         nextPreventiveDate: nextPreventive
+//     };
+
+//     try {
+//         const patrimony = await prisma.equipment.findUnique({
+//             where: {
+//                 patrimony: data.patrimony
+//             }
+//         })
+
+//         if (patrimony) {
+//             const error = new Error("Esse patrimônio já tem cadastro, verifique no sistema!");
+//             error.statusCode = 409;
+//             throw error;
+//         }
+
+//         return await prisma.equipment.create({
+//             data
+//         });
+//     } catch (err) {
+//         console.error("Erro ao criar:", err.message);
+//         throw err;
+//     }
+// };
 
 const update = async (id, data) => {
     const { name, patrimony, local, status, acquisitionDate, categoryId, nextPreventiveDate } = data;
